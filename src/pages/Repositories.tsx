@@ -134,19 +134,27 @@ export default function Repositories() {
   };
 
   const EmptyState = () => (
-    <Card className="border-dashed">
-      <CardContent className="flex flex-col items-center justify-center py-16">
-        <GitBranch className="h-12 w-12 text-muted-foreground mb-4" />
-        <h3 className="text-lg font-semibold mb-2">No repositories added yet</h3>
-        <p className="text-muted-foreground mb-6 text-center max-w-md">
-          Start by adding your first repository to begin security scanning and monitoring.
-        </p>
-        <Button onClick={() => setIsAddDialogOpen(true)}>
-          <Plus className="h-4 w-4 mr-2" />
-          Add Repository
-        </Button>
-      </CardContent>
-    </Card>
+    <div className="flex flex-col items-center justify-center py-20 px-8">
+      <div className="w-16 h-16 rounded-full bg-muted/30 flex items-center justify-center mb-6">
+        <Plus className="h-8 w-8 text-muted-foreground" />
+      </div>
+      <h2 className="text-2xl font-semibold text-foreground mb-3">
+        Ready to get started?
+      </h2>
+      <p className="text-muted-foreground mb-8 text-center max-w-md">
+        Connect your first repository to begin scanning and monitoring your code
+      </p>
+      <Button 
+        onClick={() => setIsAddDialogOpen(true)}
+        className="px-8 py-3 h-auto"
+      >
+        <Plus className="h-4 w-4 mr-2" />
+        Add Your First Repository
+      </Button>
+      <p className="text-sm text-muted-foreground mt-4 text-center">
+        Once connected, we'll scan your repository for security vulnerabilities
+      </p>
+    </div>
   );
 
   return (
