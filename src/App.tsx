@@ -1,0 +1,59 @@
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { ThemeProvider } from "@/contexts/ThemeContext";
+import Auth from "./pages/Auth";
+import HubSetup from "./pages/HubSetup";
+import Dashboard from "./pages/Dashboard";
+import Repositories from "./pages/Repositories";
+import ScanPage from "./pages/ScanPage";
+import Settings from "./pages/Settings";
+import AppLayout from "./components/layout/AppLayout";
+import NotFound from "./pages/NotFound";
+
+const queryClient = new QueryClient();
+
+// Protected Route component
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+  return isAuthenticated ? <>{children}</> : <Navigate to="/auth" replace />;
+};
+
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <ThemeProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+        <Routes>
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/hub-setup" element={
+            <ProtectedRoute>
+              <HubSetup />
+            </ProtectedRoute>
+          } />
+          <Route path="/" element={
+            <ProtectedRoute>
+              <AppLayout />
+            </ProtectedRoute>
+          }>
+            <Route index element={<Navigate to="/dashboard" replace />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="repositories" element={<Repositories />} />
+            <Route path="repositories/:repoId/scan" element={<ScanPage />} />
+            <Route path="scans" element={<div className="p-8 text-center text-muted-foreground">Scans & Reports page coming soon...</div>} />
+            <Route path="integrations" element={<div className="p-8 text-center text-muted-foreground">Integrations page coming soon...</div>} />
+            <Route path="settings" element={<Settings />} />
+          </Route>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+      </TooltipProvider>
+    </ThemeProvider>
+  </QueryClientProvider>
+);
+
+export default App;
