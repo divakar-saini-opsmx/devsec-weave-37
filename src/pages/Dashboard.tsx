@@ -16,13 +16,58 @@ import {
 const Dashboard = () => {
   const [user, setUser] = useState<any>({});
   const [hubs, setHubs] = useState<any[]>([]);
+  const [isGitHubConnected, setIsGitHubConnected] = useState(false);
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem('user') || '{}');
     const hubsData = JSON.parse(localStorage.getItem('hubs') || '[]');
+    const githubConnected = localStorage.getItem('githubConnected') === 'true';
     setUser(userData);
     setHubs(hubsData);
+    setIsGitHubConnected(githubConnected);
   }, []);
+
+  const handleConnectGitHub = () => {
+    // Simulate GitHub connection
+    localStorage.setItem('githubConnected', 'true');
+    setIsGitHubConnected(true);
+  };
+
+  // Empty state when no GitHub connection
+  const GitHubEmptyState = () => (
+    <div className="flex flex-col items-center justify-center py-20 px-8 min-h-[60vh]">
+      <div className="w-16 h-16 rounded-lg bg-muted/30 flex items-center justify-center mb-6">
+        <GitBranch className="h-8 w-8 text-muted-foreground" />
+      </div>
+      <h2 className="text-2xl font-semibold text-foreground mb-3">
+        Welcome to Dashboard
+      </h2>
+      <p className="text-muted-foreground mb-8 text-center max-w-md">
+        Connect a Git provider and add your first repository to start scanning your codebase for security vulnerabilities.
+      </p>
+      <div className="mb-6">
+        <p className="text-sm font-medium text-foreground mb-4">
+          Connect a Provider
+        </p>
+        <p className="text-sm text-muted-foreground mb-4">
+          Choose your Git provider to get started
+        </p>
+        <Button 
+          onClick={handleConnectGitHub}
+          variant="outline"
+          className="px-8 py-3 h-auto min-w-[200px]"
+        >
+          <GitBranch className="h-4 w-4 mr-2" />
+          GitHub
+        </Button>
+      </div>
+    </div>
+  );
+
+  // If GitHub is not connected, show empty state
+  if (!isGitHubConnected) {
+    return <GitHubEmptyState />;
+  }
 
   const securityMetrics = [
     {
