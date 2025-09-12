@@ -47,15 +47,6 @@ const HubSetup = () => {
       existingHubs.push(hubData);
       localStorage.setItem('hubs', JSON.stringify(existingHubs));
       
-      // Complete authentication process
-      const tempUser = localStorage.getItem('tempUser');
-      if (tempUser) {
-        localStorage.setItem('isAuthenticated', 'true');
-        localStorage.setItem('user', tempUser);
-        localStorage.removeItem('tempUser');
-        localStorage.removeItem('authProvider');
-      }
-      
       setIsCreating(false);
       toast({
         title: "Hub created successfully!",
@@ -178,12 +169,7 @@ const HubSetup = () => {
                   </Button>
                   
                   <Button
-                    onClick={() => {
-                      // Clear temp auth data when skipping
-                      localStorage.removeItem('tempUser');
-                      localStorage.removeItem('authProvider');
-                      navigate('/auth');
-                    }}
+                    onClick={() => navigate('/dashboard')}
                     variant="ghost"
                     className="flex-1 h-12"
                   >

@@ -13,9 +13,9 @@ const Auth = () => {
     
     // Simulate authentication process
     setTimeout(() => {
-      // Just mark as having started auth flow, not fully authenticated yet
-      localStorage.setItem('authProvider', provider);
-      localStorage.setItem('tempUser', JSON.stringify({
+      // Mock successful auth - in real app this would handle OAuth flows
+      localStorage.setItem('isAuthenticated', 'true');
+      localStorage.setItem('user', JSON.stringify({
         name: 'John Developer',
         email: 'john@example.com',
         avatar: 'https://github.com/johndoe.png'
