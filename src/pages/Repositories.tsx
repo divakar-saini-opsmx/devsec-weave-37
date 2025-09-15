@@ -115,7 +115,7 @@ const IssuesSummary = ({ issues }: { issues: Repository['issues'] }) => {
 
 export default function Repositories() {
   const navigate = useNavigate();
-  const [repositories, setRepositories] = useState<Repository[]>([]);
+  const [repositories, setRepositories] = useState<Repository[]>(mockRepositories);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
   const handleScan = (repoId: string) => {

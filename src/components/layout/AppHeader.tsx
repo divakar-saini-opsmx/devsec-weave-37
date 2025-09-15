@@ -22,9 +22,6 @@ export const AppHeader = () => {
     <header className="h-16 border-b border-border bg-card px-6 flex items-center justify-between">
       <div className="flex items-center gap-4">
         <SidebarTrigger className="h-8 w-8" />
-        <div className="text-sm text-muted-foreground">
-          Dashboard
-        </div>
       </div>
 
       <div className="flex items-center gap-3">
