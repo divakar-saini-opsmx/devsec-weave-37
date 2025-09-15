@@ -37,7 +37,7 @@ const Auth = () => {
             </div>
           </div>
           <h1 className="text-4xl font-bold text-foreground">
-            <span className="gradient-hero bg-clip-text text-transparent">
+            <span className="text-foreground">
               DevSecOps Platform
             </span>
           </h1>
