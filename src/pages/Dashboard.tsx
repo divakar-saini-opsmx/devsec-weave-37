@@ -69,6 +69,7 @@ const Dashboard = () => {
     return <GitHubEmptyState />;
   }
 
+
   const securityMetrics = [
     {
       title: 'Security Score',
