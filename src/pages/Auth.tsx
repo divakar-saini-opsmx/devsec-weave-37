@@ -37,9 +37,7 @@ const Auth = () => {
             </div>
           </div>
           <h1 className="text-4xl font-bold text-foreground">
-            <span className="gradient-hero bg-clip-text text-transparent">
-              DevSecOps Platform
-            </span>
+            DevSecOps Platform
           </h1>
           <p className="text-xl text-muted-foreground mt-2">
             Security as an enabler, not a blocker
