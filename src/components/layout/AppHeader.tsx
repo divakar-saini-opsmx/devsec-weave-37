@@ -14,6 +14,7 @@ export const AppHeader = () => {
     localStorage.removeItem('isAuthenticated');
     localStorage.removeItem('user');
     localStorage.removeItem('hubs');
+    localStorage.removeItem('githubConnected');
     navigate('/auth');
   };
 
@@ -21,9 +22,6 @@ export const AppHeader = () => {
     <header className="h-16 border-b border-border bg-card px-6 flex items-center justify-between">
       <div className="flex items-center gap-4">
         <SidebarTrigger className="h-8 w-8" />
-        <div className="text-sm text-muted-foreground">
-          Dashboard
-        </div>
       </div>
 
       <div className="flex items-center gap-3">
@@ -32,6 +30,7 @@ export const AppHeader = () => {
         </Button>
         
         <ThemeSwitch />
+
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
