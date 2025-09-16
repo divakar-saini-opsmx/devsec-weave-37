@@ -196,155 +196,36 @@ const Dashboard = () => {
       </div> */}
        {/* Main Issues Overview */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recent Activity */}
-        <Card className="border-0 shadow-md">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Activity className="h-5 w-5" />
-              Recent Activity
-            </CardTitle>
-            <CardDescription>
-              Latest security events across your repositories
-            </CardDescription>
-            <Card className="border-0 shadow-md bg-card">
+        {/* Open Issues */}
+        <Card className="border-0 shadow-md bg-card">
           <CardHeader className="pb-4">
             <CardTitle className="text-lg font-semibold">Open Issues</CardTitle>
           </CardHeader>
-          {/* <CardContent>
-            <div className="space-y-4">
-              {recentActivity.map((activity, index) => {
-                const Icon = getActivityIcon(activity.type);
-                return (
-                  <div key={index} className="flex items-start gap-3 p-3 rounded-lg hover:bg-muted/50 transition-smooth">
-                    <div className={`p-1.5 rounded-full bg-muted ${getSeverityColor(activity.severity)}`}>
-                      <Icon className="h-3 w-3" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium">{activity.message}</p>
-                      <div className="flex items-center gap-2 mt-1">
-                        <Clock className="h-3 w-3 text-muted-foreground" />
-                        <p className="text-xs text-muted-foreground">{activity.timestamp}</p>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })} */}
-               <CardContent className="pt-0">
+          <CardContent className="pt-0">
             <div className="flex flex-col items-center justify-center py-12">
               <div className="text-6xl font-bold text-foreground mb-4">0</div>
               <div className="w-32 h-32 bg-muted/30 rounded-full flex items-center justify-center mb-4">
                 <div className="w-24 h-24 bg-muted/50 rounded-full"></div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
-                 {/* Pressing Issues */}
+        {/* Pressing Issues */}
         <Card className="border-0 shadow-md bg-card">
           <CardHeader className="pb-4 flex flex-row items-center justify-between">
             <CardTitle className="text-lg font-semibold">Pressing Issues</CardTitle>
-            </CardHeader>
             <Button variant="ghost" size="sm" className="text-muted-foreground">
               ⚡
             </Button>
-            <CardContent className="pt-0">
+          </CardHeader>
+          <CardContent className="pt-0">
             <div className="flex flex-col items-center justify-center py-8">
               <div className="text-6xl font-bold text-destructive mb-2">0</div>
               <p className="text-sm text-muted-foreground mb-4">No urgent issues</p>
               <div className="flex items-center gap-2 text-secondary">
                 <CheckCircle className="h-5 w-5" />
                 <span className="text-sm">No pressing issues found</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        </div>
-        </div>
-         {/* Last Updated */}
-      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-        <Clock className="h-4 w-4" />
-        <span>Last updated: {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}</span>
-      </div>
-      </CardContent>
-      </Card>
-      </CardHeader>
-      </Card>
-
-
-        {/* Security Insights
-        <Card className="border-0 shadow-md">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5" />
-              Security Insights
-            </CardTitle>
-            <CardDescription>
-              AI-powered recommendations for your security posture
-            </CardDescription> */}
-             {/* Pressing Issues */}
-        <Card className="border-0 shadow-md bg-card">
-          <CardHeader className="pb-4 flex flex-row items-center justify-between">
-            <CardTitle className="text-lg font-semibold">Pressing Issues</CardTitle>
-            <Button variant="ghost" size="sm" className="text-muted-foreground">
-              ⚡
-            </Button>
-          </CardHeader>
-          {/* <CardContent>
-            <div className="space-y-4">
-              <div className="p-4 bg-secondary/10 rounded-lg border border-secondary/20">
-                <div className="flex items-center gap-2 mb-2">
-                  <CheckCircle className="h-4 w-4 text-secondary" />
-                  <p className="font-medium text-sm">Great Progress!</p>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  You've resolved 85% more vulnerabilities this month compared to last month.
-                </p>
-              </div>
-              
-              <div className="p-4 bg-primary/10 rounded-lg border border-primary/20">
-                <div className="flex items-center gap-2 mb-2">
-                  <Shield className="h-4 w-4 text-primary" />
-                  <p className="font-medium text-sm">Recommendation</p>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  Enable automated dependency updates to reduce future vulnerabilities by up to 40%.
-                </p>
-                <Button variant="outline" size="sm" className="mt-3">
-                  Enable Auto-Updates
-                </Button>
-              </div>
-              
-              <div className="p-4 bg-muted/50 rounded-lg">
-                <div className="flex items-center gap-2 mb-2">
-                  <Users className="h-4 w-4 text-muted-foreground" />
-                  <p className="font-medium text-sm">Team Collaboration</p>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  Consider inviting team members to collaborate on security improvements.
-                </p> */}
-                 {/* Pressing Issues */}
-                 </Card>
-        <Card className="border-0 shadow-md bg-card">
-          <CardHeader className="pb-4 flex flex-row items-center justify-between">
-            <CardTitle className="text-lg font-semibold">Pressing Issues</CardTitle>
-            <Button variant="ghost" size="sm" className="text-muted-foreground">
-              ⚡
-            </Button>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="p-4 bg-secondary/10 rounded-lg border border-secondary/20">
-                <div className="flex items-center gap-2 mb-2">
-                  <CheckCircle className="h-4 w-4 text-secondary" />
-                  <p className="font-medium text-sm">Great Progress!</p>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  You've resolved 85% more vulnerabilities this month compared to last month.
-                </p>
-              </div>
-              <div className="p-4 bg-primary/10 rounded-lg border border-primary/20">
-                <div className="flex items-center gap-2 mb-2">
-                  <Shield className="h-4 w-4 text-primary" />
-                  <p className="font-medium text-sm">Recommendation</p>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  Enable automated dependency updates to reduce future vulnerabilities by up to 40%. </p>
               </div>
             </div>
           </CardContent>
