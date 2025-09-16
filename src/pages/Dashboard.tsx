@@ -22,10 +22,10 @@ const Dashboard = () => {
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem('user') || '{}');
     const hubsData = JSON.parse(localStorage.getItem('hubs') || '[]');
+    const githubConnected = localStorage.getItem('githubConnected') === 'true';
     setUser(userData);
     setHubs(hubsData);
-    // const connected = localStorage.getItem('githubConnected') === 'true';
-    // setIsGitHubConnected(connected);
+    setIsGitHubConnected(githubConnected);
   }, []);
 
   const handleConnectGitHub = () => {
@@ -48,11 +48,13 @@ const Dashboard = () => {
       </p>
       <div className="mb-6">
         {/* <p className="text-sm font-medium text-foreground mb-4">
+
           Connect a Provider
         </p>
         <p className="text-sm text-muted-foreground mb-4">
           Choose your Git provider to get started
         </p> */}
+
         <Button 
           onClick={handleConnectGitHub}
           variant="outline"
@@ -232,6 +234,7 @@ const Dashboard = () => {
               <div className="text-6xl font-bold text-foreground mb-4">0</div>
               <div className="w-32 h-32 bg-muted/30 rounded-full flex items-center justify-center mb-4">
                 <div className="w-24 h-24 bg-muted/50 rounded-full"></div>
+
                  {/* Pressing Issues */}
         <Card className="border-0 shadow-md bg-card">
           <CardHeader className="pb-4 flex flex-row items-center justify-between">
@@ -262,6 +265,7 @@ const Dashboard = () => {
       </Card>
       </CardHeader>
       </Card>
+
 
         {/* Security Insights
         <Card className="border-0 shadow-md">
@@ -347,43 +351,20 @@ const Dashboard = () => {
         </Card>
       </div>
 
-      {/* Hub Overview */}
-      {hubs.length > 0 && (
-        <Card className="border-0 shadow-md">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <GitBranch className="h-5 w-5" />
-              Your Security Hubs
-            </CardTitle>
-            <CardDescription>
-              Manage and monitor your connected repositories
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {hubs.map((hub) => (
-                <div key={hub.id} className="p-4 rounded-lg border bg-card hover:shadow-md transition-smooth">
-                  <div className="flex items-center justify-between mb-2">
-                    <h4 className="font-medium">{hub.name}</h4>
-                    <Badge variant={hub.githubConnected ? "secondary" : "outline"}>
-                      {hub.githubConnected ? "Connected" : "Setup Pending"}
-                    </Badge>
-                  </div>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    {hub.description || "No description provided"}
-                  </p>
-                  <div className="flex items-center justify-between text-xs text-muted-foreground">
-                    <span>Created {new Date(hub.createdAt).toLocaleDateString()}</span>
-                    <Button variant="ghost" size="sm">
-                      View Details
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
+      {/* Last Updated */}
+      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        <Clock className="h-4 w-4" />
+        <span>Last updated: {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}</span>
+      </div>
+
+      
+      {/* 
+      Commented out existing dashboard content:
+      - Security metrics grid with cards showing security score, vulnerabilities, etc.
+      - Recent activity feed with vulnerability alerts and fixes
+      - Security insights with AI-powered recommendations  
+      - Hub overview showing connected repositories
+      */}
     </div>
   );
 };
