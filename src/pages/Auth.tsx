@@ -16,9 +16,9 @@ const Auth = () => {
       // Mock successful auth - in real app this would handle OAuth flows
       localStorage.setItem('isAuthenticated', 'true');
       localStorage.setItem('user', JSON.stringify({
-        name: 'John Developer',
-        email: 'john@example.com',
-        avatar: 'https://github.com/johndoe.png'
+        name: 'Admin',
+        email: 'admin@example.com',
+        avatar: ''
       }));
       
       setIsLoading(false);
@@ -36,23 +36,23 @@ const Auth = () => {
               <Shield className="h-8 w-8 text-white" />
             </div>
           </div>
-          <h1 className="text-4xl font-bold text-foreground">
+          {/* <h1 className="text-4xl font-bold text-foreground">
             <span className="text-foreground">
               DevSecOps Platform
             </span>
             </h1>
           <p className="text-xl text-muted-foreground mt-2">
             Security as an enabler, not a blocker
-          </p>
+          </p> */}
         </div>
 
         {/* Auth Card */}
         <Card className="shadow-lg border-0">
           <CardHeader className="text-center">
-            <CardTitle>Welcome Back</CardTitle>
+            {/* <CardTitle>Welcome Back</CardTitle>
             <CardDescription>
               Choose your preferred authentication method to continue
-            </CardDescription>
+            </CardDescription> */}
           </CardHeader>
           <CardContent className="space-y-4">
             <Button

@@ -21,13 +21,13 @@ export const AppHeader = () => {
   return (
     <header className="h-16 border-b border-border bg-card px-6 flex items-center justify-between">
       <div className="flex items-center gap-4">
-        <SidebarTrigger className="h-8 w-8" />
+        {/* <SidebarTrigger className="h-8 w-8" /> */}
       </div>
 
       <div className="flex items-center gap-3">
-        <Button variant="ghost" size="icon" className="h-8 w-8">
+        {/* <Button variant="ghost" size="icon" className="h-8 w-8">
           <Bell className="h-4 w-4" />
-        </Button>
+        </Button> */}
         
         <ThemeSwitch />
 
