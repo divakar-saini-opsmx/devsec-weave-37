@@ -33,12 +33,12 @@ const navigationItems = [
     icon: GitBranch,
     badge: null
   },
-  {
-    title: 'Scans & Reports',
-    url: '/scans',
-    icon: Activity,
-    badge: '3'
-  },
+  // {
+  //   title: 'Scans & Reports',
+  //   url: '/scans',
+  //   icon: Activity,
+  //   badge: '3'
+  // },
   {
     title: 'Integrations',
     url: '/integrations',
@@ -79,7 +79,7 @@ export function AppSidebar() {
             {!isCollapsed && (
               <div className="min-w-0">
                <h1 className="font-bold text-lg text-primary truncate">
-                  DevSecOps
+                  AI Guardian
                 </h1>
                 <p className="text-xs text-muted-foreground truncate">
                   Security Platform
@@ -91,9 +91,9 @@ export function AppSidebar() {
 
         {/* Navigation */}
         <SidebarGroup className="px-4 py-6">
-          <SidebarGroupLabel className={isCollapsed ? 'sr-only' : ''}>
+          {/* <SidebarGroupLabel className={isCollapsed ? 'sr-only' : ''}>
             Navigation
-          </SidebarGroupLabel>
+          </SidebarGroupLabel> */}
           <SidebarGroupContent>
             <SidebarMenu>
               {navigationItems.map((item) => (
