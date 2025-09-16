@@ -25,8 +25,7 @@ const Dashboard = () => {
     const githubConnected = localStorage.getItem('githubConnected') === 'true';
     setUser(userData);
     setHubs(hubsData);
-    // const connected = localStorage.getItem('githubConnected') === 'true';
-    // setIsGitHubConnected(connected);
+    setIsGitHubConnected(githubConnected);
   }, []);
 
   const handleConnectGitHub = () => {
@@ -157,167 +156,58 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-8">
-      {/* Welcome Header */}
-      {/* <div className="space-y-2">
-        <h1 className="text-3xl font-bold">
-          Welcome back, {user.name?.split(' ')[0] || 'Developer'}! 👋
-        </h1>
-        <p className="text-muted-foreground">
-          Here's what's happening with your security posture today.
-        </p>
-      </div> */}
-
-      {/* Security Metrics Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {securityMetrics.map((metric) => (
-          <Card key={metric.title} className="border-0 shadow-md hover:shadow-lg transition-smooth">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <metric.icon className={`h-4 w-4 ${metric.color}`} />
-                    <p className="text-sm font-medium text-muted-foreground">
-                      {metric.title}
-                    </p>
-                  </div>
-                  <p className="text-3xl font-bold">{metric.value}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {metric.description}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <Badge variant="secondary" className="text-xs">
-                    {metric.trend}
-                  </Badge>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
+      {/* Main Issues Overview */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recent Activity */}
-        <Card className="border-0 shadow-md">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Activity className="h-5 w-5" />
-              Recent Activity
-            </CardTitle>
-            <CardDescription>
-              Latest security events across your repositories
-            </CardDescription>
+        {/* Open Issues */}
+        <Card className="border-0 shadow-md bg-card">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-lg font-semibold">Open Issues</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {recentActivity.map((activity, index) => {
-                const Icon = getActivityIcon(activity.type);
-                return (
-                  <div key={index} className="flex items-start gap-3 p-3 rounded-lg hover:bg-muted/50 transition-smooth">
-                    <div className={`p-1.5 rounded-full bg-muted ${getSeverityColor(activity.severity)}`}>
-                      <Icon className="h-3 w-3" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium">{activity.message}</p>
-                      <div className="flex items-center gap-2 mt-1">
-                        <Clock className="h-3 w-3 text-muted-foreground" />
-                        <p className="text-xs text-muted-foreground">{activity.timestamp}</p>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
+          <CardContent className="pt-0">
+            <div className="flex flex-col items-center justify-center py-12">
+              <div className="text-6xl font-bold text-foreground mb-4">0</div>
+              <div className="w-32 h-32 bg-muted/30 rounded-full flex items-center justify-center mb-4">
+                <div className="w-24 h-24 bg-muted/50 rounded-full"></div>
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Security Insights */}
-        <Card className="border-0 shadow-md">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5" />
-              Security Insights
-            </CardTitle>
-            <CardDescription>
-              AI-powered recommendations for your security posture
-            </CardDescription>
+        {/* Pressing Issues */}
+        <Card className="border-0 shadow-md bg-card">
+          <CardHeader className="pb-4 flex flex-row items-center justify-between">
+            <CardTitle className="text-lg font-semibold">Pressing Issues</CardTitle>
+            <Button variant="ghost" size="sm" className="text-muted-foreground">
+              ⚡
+            </Button>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="p-4 bg-secondary/10 rounded-lg border border-secondary/20">
-                <div className="flex items-center gap-2 mb-2">
-                  <CheckCircle className="h-4 w-4 text-secondary" />
-                  <p className="font-medium text-sm">Great Progress!</p>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  You've resolved 85% more vulnerabilities this month compared to last month.
-                </p>
-              </div>
-              
-              <div className="p-4 bg-primary/10 rounded-lg border border-primary/20">
-                <div className="flex items-center gap-2 mb-2">
-                  <Shield className="h-4 w-4 text-primary" />
-                  <p className="font-medium text-sm">Recommendation</p>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  Enable automated dependency updates to reduce future vulnerabilities by up to 40%.
-                </p>
-                <Button variant="outline" size="sm" className="mt-3">
-                  Enable Auto-Updates
-                </Button>
-              </div>
-              
-              <div className="p-4 bg-muted/50 rounded-lg">
-                <div className="flex items-center gap-2 mb-2">
-                  <Users className="h-4 w-4 text-muted-foreground" />
-                  <p className="font-medium text-sm">Team Collaboration</p>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  Consider inviting team members to collaborate on security improvements.
-                </p>
+          <CardContent className="pt-0">
+            <div className="flex flex-col items-center justify-center py-8">
+              <div className="text-6xl font-bold text-destructive mb-2">0</div>
+              <p className="text-sm text-muted-foreground mb-4">No urgent issues</p>
+              <div className="flex items-center gap-2 text-secondary">
+                <CheckCircle className="h-5 w-5" />
+                <span className="text-sm">No pressing issues found</span>
               </div>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Hub Overview */}
-      {hubs.length > 0 && (
-        <Card className="border-0 shadow-md">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <GitBranch className="h-5 w-5" />
-              Your Security Hubs
-            </CardTitle>
-            <CardDescription>
-              Manage and monitor your connected repositories
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {hubs.map((hub) => (
-                <div key={hub.id} className="p-4 rounded-lg border bg-card hover:shadow-md transition-smooth">
-                  <div className="flex items-center justify-between mb-2">
-                    <h4 className="font-medium">{hub.name}</h4>
-                    <Badge variant={hub.githubConnected ? "secondary" : "outline"}>
-                      {hub.githubConnected ? "Connected" : "Setup Pending"}
-                    </Badge>
-                  </div>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    {hub.description || "No description provided"}
-                  </p>
-                  <div className="flex items-center justify-between text-xs text-muted-foreground">
-                    <span>Created {new Date(hub.createdAt).toLocaleDateString()}</span>
-                    <Button variant="ghost" size="sm">
-                      View Details
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
+      {/* Last Updated */}
+      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        <Clock className="h-4 w-4" />
+        <span>Last updated: {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}</span>
+      </div>
+
+      
+      {/* 
+      Commented out existing dashboard content:
+      - Security metrics grid with cards showing security score, vulnerabilities, etc.
+      - Recent activity feed with vulnerability alerts and fixes
+      - Security insights with AI-powered recommendations  
+      - Hub overview showing connected repositories
+      */}
     </div>
   );
 };
