@@ -8,6 +8,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Shield, Github, Plus, CheckCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { HelpCircle } from "lucide-react";
 
 const HubSetup = () => {
   const navigate = useNavigate();
@@ -18,6 +20,7 @@ const HubSetup = () => {
   });
   const [isCreating, setIsCreating] = useState(false);
   const [githubConnected, setGithubConnected] = useState(false);
+  const [hubCreated, setHubCreated] = useState(false); 
 
   const handleCreateHub = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,12 +51,13 @@ const HubSetup = () => {
       localStorage.setItem('hubs', JSON.stringify(existingHubs));
       
       setIsCreating(false);
+      setHubCreated(true); // ✅ Show GitHub Integration after hub is created
       toast({
         title: "Hub created successfully!",
         description: `${formData.name} is ready for secure development.`
       });
       
-      navigate('/dashboard');
+      //navigate('/dashboard');
     }, 1000);
   };
 
@@ -66,14 +70,15 @@ const HubSetup = () => {
         title: "GitHub connected!",
         description: "Your repositories are now ready for automated security scans."
       });
+      navigate('/repositories');
     }, 1000);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted p-6">
-      <div className="max-w-2xl mx-auto space-y-8">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted p-6">
+      <div className="w-full max-w-2xl">
         {/* Header */}
-        <div className="text-center space-y-4">
+        {/* <div className="text-center space-y-4">
           <div className="flex items-center justify-center">
             <div className="p-3 bg-gradient-primary rounded-2xl shadow-glow">
               <Shield className="h-8 w-8 text-white" />
@@ -85,18 +90,35 @@ const HubSetup = () => {
               Set up a centralized workspace for your repositories and security workflows
             </p>
           </div>
-        </div>
+        </div> */}
 
         {/* Hub Creation Form */}
+        {!hubCreated && (
         <Card className="shadow-lg border-0">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Plus className="h-5 w-5" />
               Hub Configuration
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button type="button" className="ml-1 text-muted-foreground hover:text-foreground">
+                      <HelpCircle className="h-4 w-4" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-xs text-sm">
+                    <p>
+                      A Hub is your centralized workspace for managing repositories and security workflows.
+                      <br />
+                      Give it a clear name and optional description to easily identify its purpose.
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </CardTitle>
-            <CardDescription>
+            {/* <CardDescription>
               Define your hub settings to get started with automated security scanning
-            </CardDescription>
+            </CardDescription> */}
           </CardHeader>
           <CardContent>
             <form onSubmit={handleCreateHub} className="space-y-6">
@@ -132,17 +154,19 @@ const HubSetup = () => {
             </form>
           </CardContent>
         </Card>
+        )}
 
-        {/* GitHub Integration */}
+        {/* GitHub Integration - Only after hub created */}
+        {hubCreated && ( 
         <Card className="shadow-lg border-0">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Github className="h-5 w-5" />
               GitHub Integration
             </CardTitle>
-            <CardDescription>
+            {/* <CardDescription>
               Connect your GitHub repositories to enable automated security scanning
-            </CardDescription>
+            </CardDescription> */}
           </CardHeader>
           <CardContent className="space-y-4">
             {githubConnected ? (
@@ -169,7 +193,7 @@ const HubSetup = () => {
                   </Button>
                   
                   <Button
-                    onClick={() => navigate('/dashboard')}
+                    onClick={() => navigate('/repositories')}
                     variant="ghost"
                     className="flex-1 h-12"
                   >
@@ -177,18 +201,19 @@ const HubSetup = () => {
                   </Button>
                 </div>
                 
-                <div className="text-sm text-muted-foreground space-y-2">
+                {/* <div className="text-sm text-muted-foreground space-y-2">
                   <p className="font-medium">Why connect GitHub?</p>
                   <ul className="space-y-1 text-xs">
                     <li>• Automated SAST & SCA vulnerability scanning</li>
                     <li>• AI-powered security patches in pull requests</li>
                     <li>• Real-time security feedback for developers</li>
                   </ul>
-                </div>
+                </div> */}
               </div>
             )}
           </CardContent>
         </Card>
+        )}
       </div>
     </div>
   );

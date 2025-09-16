@@ -17,7 +17,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Package, Eye, MessageSquare, X } from 'lucide-react';
+import { Package, Eye, MessageSquare, X, Cog } from 'lucide-react';
+
 
 interface ScaFinding {
   id: string;
@@ -173,7 +174,8 @@ export function ScaFindingsTable({ onRemediate, onViewDetail }: ScaFindingsTable
                         size="sm"
                         onClick={() => onRemediate(finding)}
                       >
-                        <MessageSquare className="h-3 w-3 mr-1" />
+                        {/* <MessageSquare className="h-3 w-3 mr-1" /> */}
+                        <Cog className="h-3 w-3 mr-1"/>
                         Remediate
                       </Button>
                       <Button
