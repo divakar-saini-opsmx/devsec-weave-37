@@ -78,7 +78,7 @@ export function AppSidebar() {
             </div>
             {!isCollapsed && (
               <div className="min-w-0">
-                <h1 className="font-bold text-lg gradient-primary bg-clip-text text-transparent truncate">
+               <h1 className="font-bold text-lg text-primary truncate">
                   DevSecOps
                 </h1>
                 <p className="text-xs text-muted-foreground truncate">

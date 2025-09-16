@@ -36,9 +36,11 @@ const Auth = () => {
               <Shield className="h-8 w-8 text-white" />
             </div>
           </div>
-          <h1 className="text-4xl font-bold gradient-hero bg-clip-text text-transparent">
-            DevSecOps Platform
-          </h1>
+          <h1 className="text-4xl font-bold text-foreground">
+            <span className="text-foreground">
+              DevSecOps Platform
+            </span>
+            </h1>
           <p className="text-xl text-muted-foreground mt-2">
             Security as an enabler, not a blocker
           </p>

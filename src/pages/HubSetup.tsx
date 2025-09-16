@@ -61,6 +61,7 @@ const HubSetup = () => {
     // Simulate GitHub app connection
     setTimeout(() => {
       setGithubConnected(true);
+      localStorage.setItem('githubConnected', 'true');
       toast({
         title: "GitHub connected!",
         description: "Your repositories are now ready for automated security scans."
