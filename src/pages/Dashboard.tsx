@@ -13,6 +13,7 @@ import {
   Users
 } from 'lucide-react';
 
+
 const Dashboard = () => {
   const [user, setUser] = useState<any>({});
   const [hubs, setHubs] = useState<any[]>([]);
@@ -24,7 +25,8 @@ const Dashboard = () => {
     const githubConnected = localStorage.getItem('githubConnected') === 'true';
     setUser(userData);
     setHubs(hubsData);
-    setIsGitHubConnected(githubConnected);
+    // const connected = localStorage.getItem('githubConnected') === 'true';
+    // setIsGitHubConnected(connected);
   }, []);
 
   const handleConnectGitHub = () => {
@@ -46,12 +48,14 @@ const Dashboard = () => {
         Connect a Git provider and add your first repository to start scanning your codebase for security vulnerabilities.
       </p>
       <div className="mb-6">
-        <p className="text-sm font-medium text-foreground mb-4">
+        {/* <p className="text-sm font-medium text-foreground mb-4">
+
           Connect a Provider
         </p>
         <p className="text-sm text-muted-foreground mb-4">
           Choose your Git provider to get started
-        </p>
+        </p> */}
+
         <Button 
           onClick={handleConnectGitHub}
           variant="outline"
@@ -154,14 +158,14 @@ const Dashboard = () => {
   return (
     <div className="space-y-8">
       {/* Welcome Header */}
-      <div className="space-y-2">
+      {/* <div className="space-y-2">
         <h1 className="text-3xl font-bold">
           Welcome back, {user.name?.split(' ')[0] || 'Developer'}! 👋
         </h1>
         <p className="text-muted-foreground">
           Here's what's happening with your security posture today.
         </p>
-      </div>
+      </div> */}
 
       {/* Security Metrics Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

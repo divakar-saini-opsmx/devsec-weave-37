@@ -32,30 +32,30 @@ interface Repository {
 
 // Mock data for demonstration
 const mockRepositories: Repository[] = [
-  {
-    id: '1',
-    name: 'frontend-app',
-    branch: 'main',
-    status: 'Completed',
-    issues: { critical: 2, high: 4, medium: 1, low: 3 },
-    lastScan: '2 hours ago'
-  },
-  {
-    id: '2',
-    name: 'api-service',
-    branch: 'develop',
-    status: 'In Progress',
-    issues: { critical: 0, high: 0, medium: 0, low: 0 },
-    lastScan: undefined
-  },
-  {
-    id: '3',
-    name: 'payment-gateway',
-    branch: 'main',
-    status: 'Completed',
-    issues: { critical: 1, high: 2, medium: 5, low: 1 },
-    lastScan: '1 day ago'
-  }
+  // {
+  //   id: '1',
+  //   name: 'frontend-app',
+  //   branch: 'main',
+  //   status: 'Completed',
+  //   issues: { critical: 2, high: 4, medium: 1, low: 3 },
+  //   lastScan: '2 hours ago'
+  // },
+  // {
+  //   id: '2',
+  //   name: 'api-service',
+  //   branch: 'develop',
+  //   status: 'In Progress',
+  //   issues: { critical: 0, high: 0, medium: 0, low: 0 },
+  //   lastScan: undefined
+  // },
+  // {
+  //   id: '3',
+  //   name: 'payment-gateway',
+  //   branch: 'main',
+  //   status: 'Completed',
+  //   issues: { critical: 1, high: 2, medium: 5, low: 1 },
+  //   lastScan: '1 day ago'
+  // }
 ];
 
 const getStatusIcon = (status: Repository['status']) => {
@@ -80,7 +80,7 @@ const getStatusBadgeVariant = (status: Repository['status']) => {
   }
 };
 
-const IssuesSummary = ({ issues }: { issues: Repository['issues'] }) => {
+const IssuesSummary = ({ issues }: { issues: Repository['issues']}) => {
   const hasIssues = Object.values(issues).some(count => count > 0);
   
   if (!hasIssues) {
@@ -117,6 +117,7 @@ export default function Repositories() {
   const navigate = useNavigate();
   const [repositories, setRepositories] = useState<Repository[]>(mockRepositories);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isGitHubConnected, setIsGitHubConnected] = useState(false);
 
   const handleScan = (repoId: string) => {
     navigate(`/repositories/${repoId}/scan`);
@@ -131,10 +132,12 @@ export default function Repositories() {
       issues: { critical: 0, high: 0, medium: 0, low: 0 }
     };
     setRepositories(prev => [...prev, newRepo]);
+    setIsGitHubConnected(true);
   };
 
   const EmptyState = () => (
-    <div className="flex flex-col items-center justify-center py-20 px-8">
+       <div className="flex flex-col items-center justify-center py-20 px-8">
+
       <div className="w-16 h-16 rounded-full bg-muted/30 flex items-center justify-center mb-6">
         <Plus className="h-8 w-8 text-muted-foreground" />
       </div>
@@ -157,17 +160,60 @@ export default function Repositories() {
     </div>
   );
 
+   // Empty state when no GitHub connection
+   const GitHubEmptyState = () => (
+    <div className="flex flex-col items-center justify-center py-20 px-8 min-h-[60vh]">
+      <div className="w-16 h-16 rounded-lg bg-muted/30 flex items-center justify-center mb-6">
+        <GitBranch className="h-8 w-8 text-muted-foreground" />
+      </div>
+      <h2 className="text-2xl font-semibold text-foreground mb-3">
+        Welcome to Console
+      </h2>
+      <p className="text-muted-foreground mb-8 text-center max-w-md">
+        Connect a Git provider and add your first repository to start scanning your codebase for security vulnerabilities.
+      </p>
+      <div className="mb-6">
+        {/* <p className="text-xl font-semibold text-foreground mb-3">
+          Connect a Provider
+        </p>
+        <p className="text-sm text-muted-foreground mb-4">
+          Choose your Git provider to get started
+        </p> */}
+        <Button 
+          onClick={handleConnectGitHub}
+          variant="outline"
+          className="px-8 py-3 h-auto min-w-[200px]"
+        >
+          <GitBranch className="h-4 w-4 mr-2" />
+          GitHub
+        </Button>
+      </div>
+    </div>
+  );
+
+  const handleConnectGitHub = () => {
+    // Simulate GitHub connection
+    localStorage.setItem('githubConnected', 'true');
+    setIsGitHubConnected(true);
+  };
+
+   // If GitHub is not connected, show empty state
+   if (!isGitHubConnected) {
+    return <GitHubEmptyState />;
+  }
+
+
   return (
     <div className="p-8">
       <div className="flex items-center justify-between mb-8">
-        <div>
+        {/* <div>
           <h1 className="text-3xl font-bold text-primary">
             Repositories
           </h1>
           <p className="text-muted-foreground mt-2">
             Manage and monitor your connected repositories
           </p>
-        </div>
+        </div> */}
         {repositories.length > 0 && (
           <Button onClick={() => setIsAddDialogOpen(true)}>
             <Plus className="h-4 w-4 mr-2" />
@@ -246,7 +292,7 @@ export default function Repositories() {
                             ReScan
                           </Button>
                         )}
-                        <Button size="sm" variant="ghost" className="h-8">
+                        <Button size="sm" variant="ghost" className="h-8"  onClick={() => navigate(`/repositories/${repo.id}/findings`)}>
                           <Eye className="h-3 w-3 mr-1" />
                           View
                         </Button>

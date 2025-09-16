@@ -21,7 +21,8 @@ import {
   Search,
   Key,
   FileText,
-  AlertTriangle
+  AlertTriangle,
+  Eye
 } from 'lucide-react';
 
 interface ScanConfig {
@@ -203,7 +204,7 @@ export default function ScanPage() {
       </Breadcrumb>
 
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-primary">
+      <h1 className="text-3xl font-bold text-primary">
           Security Scan
         </h1>
         <p className="text-muted-foreground mt-2">
@@ -366,6 +367,10 @@ export default function ScanPage() {
                   <div className="flex items-center justify-between">
                     <h4 className="font-medium">Security Issues Found</h4>
                     <div className="flex gap-2">
+                      <Button onClick={() => navigate(`/repositories/${repoId}/findings`)} size="sm">
+                        <Eye className="h-3 w-3 mr-2" />
+                        View Detailed Findings
+                      </Button>
                       <Button onClick={() => navigate('/repositories')} variant="outline" size="sm">
                         Back to Repositories
                       </Button>
