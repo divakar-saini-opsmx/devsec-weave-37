@@ -137,6 +137,7 @@ export default function Repositories() {
 
   const EmptyState = () => (
        <div className="flex flex-col items-center justify-center py-20 px-8">
+
       <div className="w-16 h-16 rounded-full bg-muted/30 flex items-center justify-center mb-6">
         <Plus className="h-8 w-8 text-muted-foreground" />
       </div>
