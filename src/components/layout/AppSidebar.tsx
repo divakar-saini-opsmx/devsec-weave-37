@@ -80,6 +80,7 @@ export function AppSidebar() {
               <div className="min-w-0">
                <h1 className="font-bold text-lg text-primary truncate">
                   AI Guardian
+
                 </h1>
                 <p className="text-xs text-muted-foreground truncate">
                   Security Platform
