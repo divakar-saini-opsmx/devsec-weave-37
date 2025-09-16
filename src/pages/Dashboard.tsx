@@ -22,6 +22,7 @@ const Dashboard = () => {
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem('user') || '{}');
     const hubsData = JSON.parse(localStorage.getItem('hubs') || '[]');
+    const githubConnected = localStorage.getItem('githubConnected') === 'true';
     setUser(userData);
     setHubs(hubsData);
     // const connected = localStorage.getItem('githubConnected') === 'true';
@@ -48,11 +49,13 @@ const Dashboard = () => {
       </p>
       <div className="mb-6">
         {/* <p className="text-sm font-medium text-foreground mb-4">
+
           Connect a Provider
         </p>
         <p className="text-sm text-muted-foreground mb-4">
           Choose your Git provider to get started
         </p> */}
+
         <Button 
           onClick={handleConnectGitHub}
           variant="outline"

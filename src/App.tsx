@@ -29,6 +29,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+<<<<<<< ai-guardian-ui-main
         <Routes>
           <Route path="/auth" element={<Auth />} />
           <Route path="/hub-setup" element={
