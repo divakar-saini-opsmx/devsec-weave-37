@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { ThemeSwitch } from '@/components/ui/theme-switch';
 import { Bell, Settings, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -29,6 +30,8 @@ export const AppHeader = () => {
         <Button variant="ghost" size="icon" className="h-8 w-8">
           <Bell className="h-4 w-4" />
         </Button>
+        
+        <ThemeSwitch />
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -48,7 +51,7 @@ export const AppHeader = () => {
               <p className="text-xs text-muted-foreground">{user.email}</p>
             </div>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate('/settings')}>
               <Settings className="h-4 w-4 mr-2" />
               Settings
             </DropdownMenuItem>
