@@ -29,31 +29,30 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-<<<<<<< ai-guardian-ui-main
-        <Routes>
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/hub-setup" element={
-            <ProtectedRoute>
-              <HubSetup />
-            </ProtectedRoute>
-          } />
-          <Route path="/" element={
-            <ProtectedRoute>
-              <AppLayout />
-            </ProtectedRoute>
-          }>
-            <Route index element={<Navigate to="/dashboard" replace />} />
-            <Route path="dashboard" element={<Dashboard />} />
-            <Route path="repositories" element={<Repositories />} />
-            <Route path="repositories/:repoId/scan" element={<ScanPage />} />
-            <Route path="repositories/:repoId/findings" element={<FindingsPage />} />
-            <Route path="scans" element={<div className="p-8 text-center text-muted-foreground">Scans & Reports page coming soon...</div>} />
-            <Route path="integrations" element={<div className="p-8 text-center text-muted-foreground">Integrations page coming soon...</div>} />
-            <Route path="settings" element={<Settings />} />
-          </Route>
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+          <Routes>
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/hub-setup" element={
+              <ProtectedRoute>
+                <HubSetup />
+              </ProtectedRoute>
+            } />
+            <Route path="/" element={
+              <ProtectedRoute>
+                <AppLayout />
+              </ProtectedRoute>
+            }>
+              <Route index element={<Navigate to="/dashboard" replace />} />
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="repositories" element={<Repositories />} />
+              <Route path="repositories/:repoId/scan" element={<ScanPage />} />
+              <Route path="repositories/:repoId/findings" element={<FindingsPage />} />
+              <Route path="scans" element={<div className="p-8 text-center text-muted-foreground">Scans & Reports page coming soon...</div>} />
+              <Route path="integrations" element={<div className="p-8 text-center text-muted-foreground">Integrations page coming soon...</div>} />
+              <Route path="settings" element={<Settings />} />
+            </Route>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
       </TooltipProvider>
     </ThemeProvider>
   </QueryClientProvider>
