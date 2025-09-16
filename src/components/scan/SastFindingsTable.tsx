@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Shield, Eye, MessageSquare, X } from 'lucide-react';
+import { Shield, Eye, MessageSquare, X ,Cog} from 'lucide-react';
 
 interface SastFinding {
   id: string;
@@ -174,7 +174,8 @@ export function SastFindingsTable({ onRemediate, onViewDetail }: SastFindingsTab
                         size="sm"
                         onClick={() => onRemediate(finding)}
                       >
-                        <MessageSquare className="h-3 w-3 mr-1" />
+                        {/* <MessageSquare className="h-3 w-3 mr-1" /> */}
+                        <Cog className="h-3 w-3 mr-1"/>
                         Remediate
                       </Button>
                       <Button

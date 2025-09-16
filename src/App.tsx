@@ -9,6 +9,7 @@ import HubSetup from "./pages/HubSetup";
 import Dashboard from "./pages/Dashboard";
 import Repositories from "./pages/Repositories";
 import ScanPage from "./pages/ScanPage";
+import FindingsPage from "./pages/FindingsPage";
 import Settings from "./pages/Settings";
 import AppLayout from "./components/layout/AppLayout";
 import NotFound from "./pages/NotFound";
@@ -44,6 +45,7 @@ const App = () => (
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="repositories" element={<Repositories />} />
             <Route path="repositories/:repoId/scan" element={<ScanPage />} />
+            <Route path="repositories/:repoId/findings" element={<FindingsPage />} />
             <Route path="scans" element={<div className="p-8 text-center text-muted-foreground">Scans & Reports page coming soon...</div>} />
             <Route path="integrations" element={<div className="p-8 text-center text-muted-foreground">Integrations page coming soon...</div>} />
             <Route path="settings" element={<Settings />} />
