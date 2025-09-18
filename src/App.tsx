@@ -11,6 +11,7 @@ import Repositories from "./pages/Repositories";
 import ScanPage from "./pages/ScanPage";
 import FindingsPage from "./pages/FindingsPage";
 import Settings from "./pages/Settings";
+import Integrations from "./pages/Integrations";
 import AppLayout from "./components/layout/AppLayout";
 import NotFound from "./pages/NotFound";
 
@@ -47,7 +48,7 @@ const App = () => (
             <Route path="repositories/:repoId/scan" element={<ScanPage />} />
             <Route path="repositories/:repoId/findings" element={<FindingsPage />} />
             <Route path="scans" element={<div className="p-8 text-center text-muted-foreground">Scans & Reports page coming soon...</div>} />
-            <Route path="integrations" element={<div className="p-8 text-center text-muted-foreground">Integrations page coming soon...</div>} />
+            <Route path="integrations" element={<Integrations />} />
             <Route path="settings" element={<Settings />} />
           </Route>
           <Route path="*" element={<NotFound />} />
