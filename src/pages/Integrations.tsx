@@ -98,7 +98,6 @@ const Integrations = () => {
                   <TableHead>Name</TableHead>
                   <TableHead>Type</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -114,13 +113,6 @@ const Integrations = () => {
                       <Badge variant={getStatusBadgeVariant(integration.status)}>
                         {integration.status}
                       </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2 justify-end">
-                        <Button variant="ghost" size="sm">
-                          <Settings className="h-4 w-4" />
-                        </Button>
-                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
