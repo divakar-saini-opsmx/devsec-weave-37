@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import Auth from "./pages/Auth";
 import HubSetup from "./pages/HubSetup";
+import ScanConfig from "./pages/ScanConfig";
 import Dashboard from "./pages/Dashboard";
 import Repositories from "./pages/Repositories";
 import ScanPage from "./pages/ScanPage";
@@ -35,6 +36,11 @@ const App = () => (
           <Route path="/hub-setup" element={
             <ProtectedRoute>
               <HubSetup />
+            </ProtectedRoute>
+          } />
+          <Route path="/scan-config" element={
+            <ProtectedRoute>
+              <ScanConfig />
             </ProtectedRoute>
           } />
           <Route path="/" element={
