@@ -74,11 +74,24 @@ export function AppSidebar() {
       <SidebarContent className="bg-card border-r border-border">
         {/* Logo */}
         <div className="p-6 border-b border-border">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-gradient-primary rounded-lg shadow-glow flex-shrink-0">
-              <Shield className="h-5 w-5 text-white" />
+          {isCollapsed ? (
+            <div className="flex flex-col items-center gap-2">
+              <div className="p-2 bg-gradient-primary rounded-lg shadow-glow">
+                <Shield className="h-5 w-5 text-white" />
+              </div>
+              <button
+                onClick={toggleSidebar}
+                className="p-1.5 hover:bg-muted rounded-md transition-smooth text-muted-foreground hover:text-foreground"
+                aria-label="Expand sidebar"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </button>
             </div>
-            {!isCollapsed && (
+          ) : (
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-gradient-primary rounded-lg shadow-glow flex-shrink-0">
+                <Shield className="h-5 w-5 text-white" />
+              </div>
               <div className="min-w-0 flex-1">
                <h1 className="font-bold text-lg text-primary truncate">
                   AI Guardian
@@ -87,19 +100,15 @@ export function AppSidebar() {
                   Security Platform
                 </p>
               </div>
-            )}
-            <button
-              onClick={toggleSidebar}
-              className="p-1.5 hover:bg-muted rounded-md transition-smooth text-muted-foreground hover:text-foreground"
-              aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-            >
-              {isCollapsed ? (
-                <ChevronRight className="h-4 w-4" />
-              ) : (
+              <button
+                onClick={toggleSidebar}
+                className="p-1.5 hover:bg-muted rounded-md transition-smooth text-muted-foreground hover:text-foreground"
+                aria-label="Collapse sidebar"
+              >
                 <ChevronLeft className="h-4 w-4" />
-              )}
-            </button>
-          </div>
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Navigation */}
