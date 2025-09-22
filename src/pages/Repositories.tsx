@@ -117,8 +117,7 @@ export default function Repositories() {
   const navigate = useNavigate();
   const [repositories, setRepositories] = useState<Repository[]>(mockRepositories);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const [isGitHubConnected, setIsGitHubConnected] = useState(false);
-
+  const [isGitHubConnected, setIsGitHubConnected] = useState(true);
   const handleScan = (repoId: string) => {
     navigate(`/repositories/${repoId}/scan`);
   };
@@ -292,7 +291,7 @@ export default function Repositories() {
                             ReScan
                           </Button>
                         )}
-                        <Button size="sm" variant="ghost" className="h-8"  onClick={() => navigate(`/repositories/${repo.id}/findings`)}>
+                        <Button size="sm" variant="ghost" className="h-8"  onClick={() => navigate(`/repositories/${repo.id}`)}>
                           <Eye className="h-3 w-3 mr-1" />
                           View
                         </Button>

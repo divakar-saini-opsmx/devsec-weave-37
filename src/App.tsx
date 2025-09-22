@@ -6,10 +6,14 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import Auth from "./pages/Auth";
 import HubSetup from "./pages/HubSetup";
+import ScanConfig from "./pages/ScanConfig";
 import Dashboard from "./pages/Dashboard";
 import Repositories from "./pages/Repositories";
 import ScanPage from "./pages/ScanPage";
 import FindingsPage from "./pages/FindingsPage";
+import RepositoryDetailsPage from "./pages/RepositoryDetailsPage";
+import ScanConfigurationPage from "./pages/ScanConfigurationPage";
+import ScanStatusPage from "./pages/ScanStatusPage";
 import Settings from "./pages/Settings";
 import Integrations from "./pages/Integrations";
 import AppLayout from "./components/layout/AppLayout";
@@ -30,30 +34,40 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <Routes>
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/hub-setup" element={
-              <ProtectedRoute>
-                <HubSetup />
-              </ProtectedRoute>
-            } />
-            <Route path="/" element={
-              <ProtectedRoute>
-                <AppLayout />
-              </ProtectedRoute>
-            }>
-              <Route index element={<Navigate to="/dashboard" replace />} />
-              <Route path="dashboard" element={<Dashboard />} />
-              <Route path="repositories" element={<Repositories />} />
-              <Route path="repositories/:repoId/scan" element={<ScanPage />} />
-              <Route path="repositories/:repoId/findings" element={<FindingsPage />} />
-              <Route path="scans" element={<div className="p-8 text-center text-muted-foreground">Scans & Reports page coming soon...</div>} />
-              <Route path="integrations" element={<Integrations />} />
-              <Route path="settings" element={<Settings />} />
-            </Route>
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
+
+        <Routes>
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/hub-setup" element={
+            <ProtectedRoute>
+              <HubSetup />
+            </ProtectedRoute>
+          } />
+          <Route path="/scan-config" element={
+            <ProtectedRoute>
+              <ScanConfig />
+            </ProtectedRoute>
+          } />
+          <Route path="/" element={
+            <ProtectedRoute>
+              <AppLayout />
+            </ProtectedRoute>
+          }>
+            <Route index element={<Navigate to="/dashboard" replace />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="repositories" element={<Repositories />} />
+            {/* <Route path="repositories/:repoId/scan" element={<ScanPage />} /> */}
+            <Route path="repositories/:repoId/scan" element={<ScanConfigurationPage />} />
+            <Route path="repositories/:repoId/scan/status" element={<ScanStatusPage />} />
+            {/* <Route path="repositories/:repoId/findings" element={<FindingsPage />} /> */}
+            <Route path="repositories/:repoId" element={<RepositoryDetailsPage />} />
+            <Route path="scans" element={<div className="p-8 text-center text-muted-foreground">Scans & Reports page coming soon...</div>} />
+            
+            <Route path="integrations" element={<Integrations />} />
+            <Route path="settings" element={<Settings />} />
+          </Route>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
       </TooltipProvider>
     </ThemeProvider>
   </QueryClientProvider>

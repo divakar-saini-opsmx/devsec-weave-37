@@ -367,7 +367,7 @@ export default function ScanPage() {
                   <div className="flex items-center justify-between">
                     <h4 className="font-medium">Security Issues Found</h4>
                     <div className="flex gap-2">
-                      <Button onClick={() => navigate(`/repositories/${repoId}/findings`)} size="sm">
+                      <Button onClick={() => navigate(`/repositories/${repoId}?tab=findings`)} size="sm">
                         <Eye className="h-3 w-3 mr-2" />
                         View Detailed Findings
                       </Button>

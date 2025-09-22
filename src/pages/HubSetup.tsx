@@ -70,7 +70,7 @@ const HubSetup = () => {
         title: "GitHub connected!",
         description: "Your repositories are now ready for automated security scans."
       });
-      navigate('/repositories');
+      navigate('/scan-config');
     }, 1000);
   };
 
@@ -193,7 +193,7 @@ const HubSetup = () => {
                   </Button>
                   
                   <Button
-                    onClick={() => navigate('/repositories')}
+                    onClick={() => navigate('/scan-config')}
                     variant="ghost"
                     className="flex-1 h-12"
                   >
