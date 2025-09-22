@@ -17,7 +17,9 @@ import {
   GitBranch, 
   Settings, 
   Zap,
-  Activity
+  Activity,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 
 const navigationItems = [
@@ -54,7 +56,7 @@ const navigationItems = [
 ];
 
 export function AppSidebar() {
-  const { state } = useSidebar();
+  const { state, toggleSidebar } = useSidebar();
   const location = useLocation();
   const isCollapsed = state === 'collapsed';
 
@@ -77,7 +79,7 @@ export function AppSidebar() {
               <Shield className="h-5 w-5 text-white" />
             </div>
             {!isCollapsed && (
-              <div className="min-w-0">
+              <div className="min-w-0 flex-1">
                <h1 className="font-bold text-lg text-primary truncate">
                   AI Guardian
                 </h1>
@@ -86,6 +88,17 @@ export function AppSidebar() {
                 </p>
               </div>
             )}
+            <button
+              onClick={toggleSidebar}
+              className="p-1.5 hover:bg-muted rounded-md transition-smooth text-muted-foreground hover:text-foreground"
+              aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            >
+              {isCollapsed ? (
+                <ChevronRight className="h-4 w-4" />
+              ) : (
+                <ChevronLeft className="h-4 w-4" />
+              )}
+            </button>
           </div>
         </div>
 
