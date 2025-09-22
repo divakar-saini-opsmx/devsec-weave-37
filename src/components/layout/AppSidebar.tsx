@@ -63,7 +63,7 @@ export function AppSidebar() {
   const getNavClassName = ({ isActive }: { isActive: boolean }) =>
     `flex items-center gap-3 transition-smooth ${
       isActive 
-        ? 'bg-primary/10 text-primary font-medium border-r-2 border-primary' 
+        ? 'bg-primary/10 text-primary font-medium' 
         : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
     }`;
 
