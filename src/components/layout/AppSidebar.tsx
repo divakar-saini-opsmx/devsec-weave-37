@@ -112,7 +112,7 @@ export function AppSidebar() {
         </div>
 
         {/* Navigation */}
-        <SidebarGroup className={isCollapsed ? "px-2 py-6" : "px-4 py-6"}>
+        <SidebarGroup className={isCollapsed ? "px-2 py-6" : "px-2 py-6"}>
           {/* <SidebarGroupLabel className={isCollapsed ? 'sr-only' : ''}>
             Navigation
           </SidebarGroupLabel> */}
