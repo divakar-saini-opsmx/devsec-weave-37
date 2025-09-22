@@ -63,7 +63,7 @@ export function AppSidebar() {
   const isActive = (path: string) => location.pathname === path;
   
   const getNavClassName = ({ isActive }: { isActive: boolean }) =>
-    `flex items-center gap-3 transition-smooth ${
+    `${isCollapsed ? 'flex items-center justify-center p-3' : 'flex items-center gap-3'} transition-smooth ${
       isActive 
         ? 'bg-primary/10 text-primary font-medium' 
         : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
@@ -75,7 +75,7 @@ export function AppSidebar() {
         {/* Logo */}
         <div className="p-6 border-b border-border">
           {isCollapsed ? (
-            <div className="flex flex-col items-center gap-2">
+            <div className="flex flex-col items-center justify-center gap-3 w-full">
               <div className="p-2 bg-gradient-primary rounded-lg shadow-glow">
                 <Shield className="h-5 w-5 text-white" />
               </div>
@@ -112,7 +112,7 @@ export function AppSidebar() {
         </div>
 
         {/* Navigation */}
-        <SidebarGroup className="px-4 py-6">
+        <SidebarGroup className={isCollapsed ? "px-2 py-6" : "px-4 py-6"}>
           {/* <SidebarGroupLabel className={isCollapsed ? 'sr-only' : ''}>
             Navigation
           </SidebarGroupLabel> */}
