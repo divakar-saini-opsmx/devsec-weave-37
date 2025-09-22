@@ -31,7 +31,6 @@ export const AppHeader = () => {
         
         <ThemeSwitch />
 
-
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 gap-2 px-2">

@@ -32,30 +32,30 @@ interface Repository {
 
 // Mock data for demonstration
 const mockRepositories: Repository[] = [
-  {
-    id: '1',
-    name: 'frontend-app',
-    branch: 'main',
-    status: 'Completed',
-    issues: { critical: 2, high: 4, medium: 1, low: 3 },
-    lastScan: '2 hours ago'
-  },
-  {
-    id: '2',
-    name: 'api-service',
-    branch: 'develop',
-    status: 'In Progress',
-    issues: { critical: 0, high: 0, medium: 0, low: 0 },
-    lastScan: undefined
-  },
-  {
-    id: '3',
-    name: 'payment-gateway',
-    branch: 'main',
-    status: 'Completed',
-    issues: { critical: 1, high: 2, medium: 5, low: 1 },
-    lastScan: '1 day ago'
-  }
+  // {
+  //   id: '1',
+  //   name: 'frontend-app',
+  //   branch: 'main',
+  //   status: 'Completed',
+  //   issues: { critical: 2, high: 4, medium: 1, low: 3 },
+  //   lastScan: '2 hours ago'
+  // },
+  // {
+  //   id: '2',
+  //   name: 'api-service',
+  //   branch: 'develop',
+  //   status: 'In Progress',
+  //   issues: { critical: 0, high: 0, medium: 0, low: 0 },
+  //   lastScan: undefined
+  // },
+  // {
+  //   id: '3',
+  //   name: 'payment-gateway',
+  //   branch: 'main',
+  //   status: 'Completed',
+  //   issues: { critical: 1, high: 2, medium: 5, low: 1 },
+  //   lastScan: '1 day ago'
+  // }
 ];
 
 const getStatusIcon = (status: Repository['status']) => {
@@ -118,7 +118,6 @@ export default function Repositories() {
   const [repositories, setRepositories] = useState<Repository[]>(mockRepositories);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isGitHubConnected, setIsGitHubConnected] = useState(true);
-
   const handleScan = (repoId: string) => {
     navigate(`/repositories/${repoId}/scan`);
   };
@@ -137,6 +136,7 @@ export default function Repositories() {
 
   const EmptyState = () => (
        <div className="flex flex-col items-center justify-center py-20 px-8">
+
       <div className="w-16 h-16 rounded-full bg-muted/30 flex items-center justify-center mb-6">
         <Plus className="h-8 w-8 text-muted-foreground" />
       </div>
