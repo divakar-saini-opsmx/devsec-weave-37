@@ -100,9 +100,7 @@ export function AppSidebar() {
         {/* Toggle Button - Positioned on border */}
         <button
           onClick={toggleSidebar}
-          className={`absolute -right-3 z-10 p-1.5 bg-background border border-border rounded-full shadow-sm hover:bg-muted transition-smooth text-muted-foreground hover:text-foreground ${
-            isCollapsed ? 'top-20' : 'top-6'
-          }`}
+          className="absolute top-20 -right-3 z-10 p-1.5 bg-background border border-border rounded-full shadow-sm hover:bg-muted transition-smooth text-muted-foreground hover:text-foreground"
           aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
           {isCollapsed ? (
