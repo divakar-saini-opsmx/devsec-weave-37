@@ -40,7 +40,7 @@ export default function Settings() {
       </Card>
 
       {/* Security Settings */}
-      <Card>
+      {/* <Card>
         <CardHeader>
           <CardTitle>Security</CardTitle>
           <CardDescription>
@@ -52,10 +52,10 @@ export default function Settings() {
             Security settings will be available in a future update.
           </div>
         </CardContent>
-      </Card>
+      </Card> */}
 
       {/* Notifications */}
-      <Card>
+      {/* <Card>
         <CardHeader>
           <CardTitle>Notifications</CardTitle>
           <CardDescription>
@@ -67,7 +67,7 @@ export default function Settings() {
             Notification settings will be available in a future update.
           </div>
         </CardContent>
-      </Card>
+      </Card> */}
     </div>
   );
 }

@@ -25,18 +25,20 @@ export const AddIntegrationDialog: React.FC<AddIntegrationDialogProps> = ({
 }) => {
   const form = useForm<FormData>({
     defaultValues: {
-      type: undefined,
+      type: 'GitHub',
       name: '',
     },
   });
 
   const handleSubmit = (data: FormData) => {
     onSave(data);
-    form.reset();
+    //form.reset();
+    form.reset({ type: 'GitHub', name: '' }); 
   };
 
   const handleCancel = () => {
-    form.reset();
+    //form.reset();
+    form.reset({ type: 'GitHub', name: '' });
     onOpenChange(false);
   };
 
@@ -56,7 +58,7 @@ export const AddIntegrationDialog: React.FC<AddIntegrationDialogProps> = ({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Type</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
+                  <Select onValueChange={field.onChange} value={field.value} disabled>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select integration type" />
@@ -64,7 +66,7 @@ export const AddIntegrationDialog: React.FC<AddIntegrationDialogProps> = ({
                     </FormControl>
                     <SelectContent>
                       <SelectItem value="GitHub">GitHub</SelectItem>
-                      <SelectItem value="GitLab">GitLab</SelectItem>
+                      {/* <SelectItem value="GitLab">GitLab</SelectItem> */}
                     </SelectContent>
                   </Select>
                   <FormMessage />
