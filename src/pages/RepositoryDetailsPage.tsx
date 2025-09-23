@@ -87,6 +87,14 @@ export default function RepositoryDetailsPage() {
           <BreadcrumbItem>
             <BreadcrumbPage>{repository.name}</BreadcrumbPage>
           </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>Scan</BreadcrumbPage>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>Findings</BreadcrumbPage>
+          </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
 

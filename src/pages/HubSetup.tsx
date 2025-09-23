@@ -10,10 +10,12 @@ import { Shield, Github, Plus, CheckCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { HelpCircle } from "lucide-react";
+import { useHub } from '@/contexts/HubContext';
 
 const HubSetup = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { addHub } = useHub();
   const [formData, setFormData] = useState({
     name: '',
     description: ''
@@ -38,17 +40,25 @@ const HubSetup = () => {
     
     // Simulate hub creation
     setTimeout(() => {
-      const hubData = {
-        id: Date.now().toString(),
-        ...formData,
-        createdAt: new Date().toISOString(),
-        githubConnected
-      };
-      
-      // Store hub data
-      const existingHubs = JSON.parse(localStorage.getItem('hubs') || '[]');
-      existingHubs.push(hubData);
-      localStorage.setItem('hubs', JSON.stringify(existingHubs));
+
+      addHub({
+        name: formData.name,
+        description: formData.description,
+        status: 'active',
+        repositoryCount: 0
+      });
+
+      // const hubData = {
+      //   id: Date.now().toString(),
+      //   ...formData,
+      //   createdAt: new Date().toISOString(),
+      //   githubConnected
+      // };
+
+      // // Store hub data
+      // const existingHubs = JSON.parse(localStorage.getItem('hubs') || '[]');
+      // existingHubs.push(hubData);
+      // localStorage.setItem('hubs', JSON.stringify(existingHubs));
       
       setIsCreating(false);
       setHubCreated(true); // ✅ Show GitHub Integration after hub is created

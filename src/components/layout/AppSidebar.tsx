@@ -19,6 +19,7 @@ import {
   Zap,
   Activity
 } from 'lucide-react';
+import { HubSelector } from '@/components/layout/HubSelector';
 
 const navigationItems = [
   {
@@ -127,7 +128,7 @@ export function AppSidebar() {
         </SidebarGroup>
 
         {/* Hub Info - Bottom */}
-        {!isCollapsed && (
+        {/* {!isCollapsed && (
           <div className="mt-auto p-4 border-t border-border">
             <div className="bg-muted/50 rounded-lg p-3">
               <p className="text-xs font-medium text-foreground">Active Hub</p>
@@ -135,7 +136,12 @@ export function AppSidebar() {
               <p className="text-xs text-muted-foreground">3 repositories</p>
             </div>
           </div>
-        )}
+        )} */}
+        {/* Hub Selector - Bottom */}
+        <div className="mt-auto">
+          <HubSelector isCollapsed={isCollapsed} />
+        </div>
+
       </SidebarContent>
     </Sidebar>
   );

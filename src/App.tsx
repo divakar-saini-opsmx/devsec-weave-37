@@ -18,6 +18,7 @@ import Settings from "./pages/Settings";
 import Integrations from "./pages/Integrations";
 import AppLayout from "./components/layout/AppLayout";
 import NotFound from "./pages/NotFound";
+import { HubProvider } from "@/contexts/HubContext"; 
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+        <HubProvider>
         <Routes>
           <Route path="/auth" element={<Auth />} />
           <Route path="/hub-setup" element={
@@ -66,6 +68,7 @@ const App = () => (
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
+        </HubProvider>
       </BrowserRouter>
       </TooltipProvider>
     </ThemeProvider>

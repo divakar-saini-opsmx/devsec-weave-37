@@ -8,7 +8,7 @@ import { AddIntegrationDialog } from '@/components/integrations/AddIntegrationDi
 
 interface Integration {
   id: string;
-  type: 'GitHub' | 'GitLab';
+  type: 'GitHub' ;
   name: string;
   status: 'active' | 'connected' | 'disconnected';
 }
@@ -34,16 +34,16 @@ const Integrations = () => {
       name: 'My GitHub Integration',
       status: 'connected'
     },
-    {
-      id: '2',
-      type: 'GitLab',
-      name: 'Company GitLab',
-      status: 'active'
-    }
+    // {
+    //   id: '2',
+    //   type: 'GitLab',
+    //   name: 'Company GitLab',
+    //   status: 'active'
+    // }
   ]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const handleSaveIntegration = (data: { type: 'GitHub' | 'GitLab'; name: string }) => {
+  const handleSaveIntegration = (data: { type: 'GitHub'; name: string }) => {
     const newIntegration: Integration = {
       id: Date.now().toString(),
       type: data.type,
