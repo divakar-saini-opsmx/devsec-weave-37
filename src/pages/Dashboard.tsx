@@ -14,10 +14,18 @@ import {
 } from 'lucide-react';
 
 
+
 const Dashboard = () => {
   const [user, setUser] = useState<any>({});
   const [hubs, setHubs] = useState<any[]>([]);
   const [isGitHubConnected, setIsGitHubConnected] = useState(false);
+  const baseUrl = window.REACT_APP_CONFIG.API_BASE_URL || "/api";
+  const hubAPI = window.REACT_APP_CONFIG.API_ENDPOINTS.GET_HUB || "/api/hublist";
+
+
+  console.log("Dashboard Page - API Base URL:", baseUrl);
+  console.log("Dashboard Page - API GetHub:", hubAPI);
+  
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem('user') || '{}');
