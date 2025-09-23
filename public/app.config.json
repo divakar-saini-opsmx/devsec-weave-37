@@ -1,0 +1,13 @@
+{
+    "API_BASE_URL": "",   
+    "API_ENDPOINTS": {
+    "GOOGLE_LOGIN": "/auth/google/login",
+    "AUTH_LOGIN": "/auth/login",
+    "AUTH_LOGOUT": "/auth/logout",
+    "GET_HUB": "/api/hublist",
+    "CREATE_HUB": "/api/createhub"   
+  }
+}
+
+
+ 

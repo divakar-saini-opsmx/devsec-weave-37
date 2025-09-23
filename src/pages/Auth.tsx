@@ -4,9 +4,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Shield, Github } from 'lucide-react';
 
+
 const Auth = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+
+  const baseUrl = window.REACT_APP_CONFIG.API_BASE_URL || "";
+  const googleLogin = window.REACT_APP_CONFIG.API_ENDPOINTS.GOOGLE_LOGIN || "/auth/google/login";
 
   const handleAuth = async (provider: 'google' | 'github') => {
     setIsLoading(true);
@@ -24,6 +28,12 @@ const Auth = () => {
       setIsLoading(false);
       navigate('/hub-setup');
     }, 1500);
+  };
+
+  const handleGoogleLogin = () => {
+    const baseUrl1 ="https://adversatively-unchevroned-anders.ngrok-free.dev";
+    //window.location.href = `${baseUrl1}${googleLogin}`;
+    window.location.href = baseUrl1+googleLogin;   
   };
 
   return (
@@ -56,7 +66,7 @@ const Auth = () => {
           </CardHeader>
           <CardContent className="space-y-4">
             <Button
-              onClick={() => handleAuth('google')}
+              onClick={() => handleGoogleLogin()}
               disabled={isLoading}
               variant="outline"
               size="lg"
