@@ -79,13 +79,6 @@ export function AppSidebar() {
               <div className="p-2 bg-gradient-primary rounded-lg shadow-glow">
                 <Shield className="h-5 w-5 text-white" />
               </div>
-              <button
-                onClick={toggleSidebar}
-                className="p-1.5 hover:bg-muted rounded-md transition-smooth text-muted-foreground hover:text-foreground"
-                aria-label="Expand sidebar"
-              >
-                <ChevronRight className="h-4 w-4" />
-              </button>
             </div>
           ) : (
             <div className="flex items-center gap-3">
@@ -100,16 +93,22 @@ export function AppSidebar() {
                   Security Platform
                 </p>
               </div>
-              <button
-                onClick={toggleSidebar}
-                className="p-1.5 hover:bg-muted rounded-md transition-smooth text-muted-foreground hover:text-foreground"
-                aria-label="Collapse sidebar"
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </button>
             </div>
           )}
         </div>
+
+        {/* Toggle Button - Positioned on border */}
+        <button
+          onClick={toggleSidebar}
+          className="absolute top-6 -right-3 z-10 p-1.5 bg-background border border-border rounded-full shadow-sm hover:bg-muted transition-smooth text-muted-foreground hover:text-foreground"
+          aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+        >
+          {isCollapsed ? (
+            <ChevronRight className="h-4 w-4" />
+          ) : (
+            <ChevronLeft className="h-4 w-4" />
+          )}
+        </button>
 
         {/* Navigation */}
         <SidebarGroup className={isCollapsed ? "px-2 py-6" : "px-2 py-6"}>
