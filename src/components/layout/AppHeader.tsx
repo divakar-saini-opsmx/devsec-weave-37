@@ -15,7 +15,7 @@ export const AppHeader = () => {
     localStorage.removeItem('user');
     localStorage.removeItem('hubs');
     localStorage.removeItem('githubConnected');
-    navigate('/auth');
+    navigate('/login');
   };
 
   return (

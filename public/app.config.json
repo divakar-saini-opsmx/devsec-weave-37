@@ -1,11 +1,12 @@
 {
-    "API_BASE_URL": "",   
+    "API_BASE_URL": "https://ai-rem-dev-api.scanner.opsmx.org",   
     "API_ENDPOINTS": {
     "GOOGLE_LOGIN": "/auth/google/login",
+    "GET_USER":"/api/v1/profile",
     "AUTH_LOGIN": "/auth/login",
     "AUTH_LOGOUT": "/auth/logout",
     "GET_HUB": "/api/hublist",
-    "CREATE_HUB": "/api/createhub"   
+    "CREATE_HUB": "/api/addhub"   
   }
 }
 

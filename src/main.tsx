@@ -19,9 +19,10 @@ const loadConfig = async () => {
     console.error('Failed to load app.config.json', err);
     // Optional fallback config
     window.REACT_APP_CONFIG = {
-        API_BASE_URL: "http://localhost:5174/api",
+        API_BASE_URL: "",
         API_ENDPOINTS: {
         GOOGLE_LOGIN : "/auth/google/login",
+        GET_USER: "/api/v1/profile",
         AUTH_LOGIN: "/auth/login",
         AUTH_LOGOUT: "/auth/logout",
         GET_HUB: "/api/hublist",

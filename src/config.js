@@ -1,5 +1,5 @@
 export const config = {
-    "API_BASE_URL": "http://localhost:5174/api",   
+    "API_BASE_URL": "ai-rem-dev-api.scanner.opsmx.org",   
     "API_ENDPOINTS": {
     "AUTH_LOGIN": "/auth/login",
     "AUTH_LOGOUT": "/auth/logout",
