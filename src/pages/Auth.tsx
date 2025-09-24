@@ -30,11 +30,47 @@ const Auth = () => {
     }, 1500);
   };
 
-  const handleGoogleLogin = () => {
-    const baseUrl1 ="https://adversatively-unchevroned-anders.ngrok-free.dev";
+  const handleGoogleLogin1 = () => {   
     //window.location.href = `${baseUrl1}${googleLogin}`;
-    window.location.href = baseUrl1+googleLogin;   
+    window.location.href = baseUrl+googleLogin; 
+  
   };
+
+  const handleGoogleLogin = async () => {
+  
+    try {
+      console.log('Initiating Google OAuth login...');
+     // updateStatus('Initiating login...', 'info');
+     
+      const response = await fetch(`${baseUrl}${googleLogin}`, {
+          method: 'GET',
+          credentials: 'include'
+      });             
+      console.log(`Response status: ${response.status}`);             
+      if (response.ok) {
+          const data = await response.json();
+          console.log(`Received auth URL: ${data.auth_url}`);
+          console.log(`State: ${data.state}`);
+         
+          // Store state for verification
+          localStorage.setItem('oauth_state', data.state);
+         
+          // Redirect to Google OAuth
+          window.location.href = data.auth_url;
+      } else {
+          const errorText = await response.text();
+          throw new Error(`Login initiation failed: ${errorText}`);
+      }
+  } catch (error) {
+    console.log(`Login initiation error: ${error.message}`, 'error');
+     // updateStatus(`Login failed: ${error.message}`, 'error');
+  }
+}
+
+     
+     
+
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted flex items-center justify-center p-4">
@@ -82,7 +118,7 @@ const Auth = () => {
             </Button>
             
             <Button
-              onClick={() => handleAuth('github')}
+              onClick={() => handleGoogleLogin1()}
               disabled={isLoading}
               variant="secondary"
               size="lg"
