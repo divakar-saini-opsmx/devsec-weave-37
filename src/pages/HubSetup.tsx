@@ -11,20 +11,26 @@ import { useToast } from '@/hooks/use-toast';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { HelpCircle } from "lucide-react";
 import { useHub } from '@/contexts/HubContext';
+import { fetchWithAuth } from "@/lib/fetchWithAuth";
 
 const HubSetup = () => {
+
+  const baseUrl = window.REACT_APP_CONFIG.API_BASE_URL || "";
+  const getHub = window.REACT_APP_CONFIG.API_ENDPOINTS.GET_HUB || "";
+  const createHub = window.REACT_APP_CONFIG.API_ENDPOINTS.CREATE_HUB || "";
   const navigate = useNavigate();
   const { toast } = useToast();
   const { addHub } = useHub();
   const [formData, setFormData] = useState({
     name: '',
+    email: '',
     description: ''
   });
   const [isCreating, setIsCreating] = useState(false);
   const [githubConnected, setGithubConnected] = useState(false);
   const [hubCreated, setHubCreated] = useState(false); 
 
-  const handleCreateHub = async (e: React.FormEvent) => {
+  const handleCreateHub1 = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!formData.name.trim()) {
@@ -42,7 +48,7 @@ const HubSetup = () => {
     setTimeout(() => {
 
       addHub({
-        name: formData.name,
+        name: formData.name,        
         description: formData.description,
         status: 'active',
         repositoryCount: 0
@@ -69,6 +75,56 @@ const HubSetup = () => {
       
       //navigate('/dashboard');
     }, 1000);
+  };
+
+  const handleCreateHub = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!formData.name.trim()) {
+      toast({
+        title: "Hub name required",
+        description: "Please provide a name for your hub.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsCreating(true);
+   
+    try {
+          const postJson = {
+            "name": formData.name,
+            "tag": formData.description,
+            "email": formData.email
+          };
+         
+          //const res = await fetch(`http://127.0.0.1:5000/conversation`, {      
+          const res = await fetchWithAuth(`${baseUrl}${createHub}`, { 
+            method: "POST",
+            // headers: {
+            //   "Content-Type": "application/json",           
+            // },
+            // credentials: 'include',
+            body: JSON.stringify(postJson),            
+          });    
+          
+          if (!res.ok) throw new Error("Something went wrong");
+  
+          const result = await res.json();
+          console.log("Response from server:", result);
+      
+          toast({
+            title: "Hub created successfully!",
+            description: `${formData.name} is ready for secure development.`
+          });
+          
+      }
+      catch (e) {
+        
+      } finally {
+        
+      }
+
   };
 
   const handleGithubConnect = () => {
@@ -142,7 +198,17 @@ const HubSetup = () => {
                   className="h-12"
                 />
               </div>
-
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  required
+                />
+              </div>
               <div className="space-y-2">
                 <Label htmlFor="description">Description (Optional)</Label>
                 <Textarea
