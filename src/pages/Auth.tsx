@@ -13,28 +13,28 @@ const Auth = () => {
   const googleLogin = window.REACT_APP_CONFIG.API_ENDPOINTS.GOOGLE_LOGIN || "/auth/google/login";
 
   const handleAuth = async (provider: 'google' | 'github') => {
-    setIsLoading(true);
+    // setIsLoading(true);
     
-    // Simulate authentication process
-    setTimeout(() => {
-      // Mock successful auth - in real app this would handle OAuth flows
-      localStorage.setItem('isAuthenticated', 'true');
-      localStorage.setItem('user', JSON.stringify({
-        name: 'Admin',
-        email: 'admin@example.com',
-        avatar: ''
-      }));
+    // // Simulate authentication process
+    // setTimeout(() => {
+    //   // Mock successful auth - in real app this would handle OAuth flows
+    //   localStorage.setItem('isAuthenticated', 'true');
+    //   localStorage.setItem('user', JSON.stringify({
+    //     name: 'Admin',
+    //     email: 'admin@example.com',
+    //     avatar: ''
+    //   }));
       
-      setIsLoading(false);
-      navigate('/hub-setup');
-    }, 1500);
+    //   setIsLoading(false);
+    //   navigate('/hub-setup');
+    // }, 1500);
   };
 
-  const handleGoogleLogin1 = () => {   
-    //window.location.href = `${baseUrl1}${googleLogin}`;
-    window.location.href = baseUrl+googleLogin; 
+  // const handleGoogleLogin1 = () => {   
+  //   //window.location.href = `${baseUrl1}${googleLogin}`;
+  //   window.location.href = baseUrl+googleLogin; 
   
-  };
+  // };
 
   const handleGoogleLogin = async () => {
   
@@ -118,7 +118,7 @@ const Auth = () => {
             </Button>
             
             <Button
-              onClick={() => handleGoogleLogin1()}
+              onClick={() => handleAuth('github')}
               disabled={isLoading}
               variant="secondary"
               size="lg"
