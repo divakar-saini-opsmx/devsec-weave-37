@@ -63,7 +63,7 @@ export function AppSidebar() {
   const isActive = (path: string) => location.pathname === path;
   
   const getNavClassName = ({ isActive }: { isActive: boolean }) =>
-    `${isCollapsed ? 'flex items-center justify-center p-2 mx-1' : 'flex items-center gap-3'} transition-smooth ${
+    `${isCollapsed ? 'flex items-center p-2 mx-1' : 'flex items-center gap-3'} transition-smooth ${
       isActive 
         ? 'bg-primary/10 text-primary font-medium' 
         : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
