@@ -15,6 +15,7 @@ import {
   CheckCircle2,
   Clock
 } from 'lucide-react';
+import { useHub } from "@/contexts/HubContext";
 
 interface Repository {
   id: string;
@@ -118,6 +119,7 @@ export default function Repositories() {
   const [repositories, setRepositories] = useState<Repository[]>(mockRepositories);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isGitHubConnected, setIsGitHubConnected] = useState(true);
+  const { activeHub } = useHub();
 
   const handleScan = (repoId: string) => {
     navigate(`/repositories/${repoId}/scan`);
@@ -212,7 +214,7 @@ export default function Repositories() {
           <p className="text-muted-foreground mt-2">
             Manage and monitor your connected repositories
           </p>
-        </div> */}
+        </div> */}        
         {repositories.length > 0 && (
           <Button onClick={() => setIsAddDialogOpen(true)}>
             <Plus className="h-4 w-4 mr-2" />

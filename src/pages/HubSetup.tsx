@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState ,useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,6 +12,8 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { HelpCircle } from "lucide-react";
 import { useHub } from '@/contexts/HubContext';
 import { fetchWithAuth } from "@/lib/fetchWithAuth";
+import { useAuth } from "@/components/auth/AuthContext";
+import { Hub } from "@/contexts/HubContext";
 
 const HubSetup = () => {
 
@@ -19,16 +21,16 @@ const HubSetup = () => {
   const getHub = window.REACT_APP_CONFIG.API_ENDPOINTS.GET_HUB || "";
   const createHub = window.REACT_APP_CONFIG.API_ENDPOINTS.CREATE_HUB || "";
   const navigate = useNavigate();
-  const { toast } = useToast();
-  const { addHub } = useHub();
+  const { toast } = useToast();  
   const [formData, setFormData] = useState({
     name: '',
-    email: '',
     description: ''
   });
   const [isCreating, setIsCreating] = useState(false);
   const [githubConnected, setGithubConnected] = useState(false);
   const [hubCreated, setHubCreated] = useState(false); 
+  const { user, isAuthenticated } = useAuth();
+  const { activeHub, hubs, setActiveHub ,setHubs} = useHub();
 
   const handleCreateHub1 = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,12 +49,7 @@ const HubSetup = () => {
     // Simulate hub creation
     setTimeout(() => {
 
-      addHub({
-        name: formData.name,        
-        description: formData.description,
-        status: 'active',
-        repositoryCount: 0
-      });
+     
 
       // const hubData = {
       //   id: Date.now().toString(),
@@ -77,6 +74,28 @@ const HubSetup = () => {
     }, 1000);
   };
 
+    const getHubList = async () => {    
+  
+      try {
+        const res = await fetchWithAuth(`${baseUrl}${getHub}?email=${user?.username}`);
+        const data = await res.json();
+        
+        if(data.data.length > 0){
+          navigate('/repositories');
+        }        
+      
+      } catch (err) {
+        toast({
+          title: "Failed to load Hub List"        
+        });
+      }
+      
+    }
+  
+    useEffect(() => {
+      getHubList();
+    }, []);
+
   const handleCreateHub = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -95,7 +114,7 @@ const HubSetup = () => {
           const postJson = {
             "name": formData.name,
             "tag": formData.description,
-            "email": formData.email
+            "email": user?.username
           };
          
           //const res = await fetch(`http://127.0.0.1:5000/conversation`, {      
@@ -112,17 +131,42 @@ const HubSetup = () => {
   
           const result = await res.json();
           console.log("Response from server:", result);
+
+          const hubData = result.data;
+
+          const newHub: Hub = {
+            id: hubData.id,
+            name: hubData.name,
+            email: hubData.email,
+            roles: hubData.roles ?? null,          // API doesn’t send, so fallback
+            labels: hubData.labels ?? [],          // default empty array
+            applications: hubData.applications ?? null,
+            description: hubData.tag ?? "",        // your API used "tag" at creation
+            status: "active",                      // new hub becomes active
+            createdAt: new Date().toISOString(),   // fallback to "now"
+          };
+
+          setHubs((prev) => {
+            const updated = prev.map(h => ({ ...h, status: "inactive" as "inactive" }));
+            return [...updated, newHub];
+          });
+          setActiveHub(newHub);
       
           toast({
             title: "Hub created successfully!",
             description: `${formData.name} is ready for secure development.`
           });
+          setHubCreated(true);
           
       }
       catch (e) {
-        
+        console.error("Failed Hub Creation", e);
+        toast({
+          title: "Hub creation failed!",
+          description: `${e}`
+        });
       } finally {
-        
+        setIsCreating(false);
       }
 
   };
@@ -198,17 +242,7 @@ const HubSetup = () => {
                   className="h-12"
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="Enter your email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  required
-                />
-              </div>
+             
               <div className="space-y-2">
                 <Label htmlFor="description">Description (Optional)</Label>
                 <Textarea
@@ -225,7 +259,8 @@ const HubSetup = () => {
                 disabled={isCreating}
                 className="w-full h-12 bg-gradient-primary hover:opacity-90 transition-smooth shadow-glow"
               >
-                {isCreating ? 'Creating Hub...' : 'Create Security Hub'}
+                {/* {isCreating ? 'Creating Hub...' : 'Create Security Hub'} */}
+                Create Security Hub
               </Button>
             </form>
           </CardContent>

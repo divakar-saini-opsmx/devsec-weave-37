@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState ,useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronUp, Plus, Circle } from 'lucide-react';
 import {
@@ -10,22 +10,88 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { useHub } from '@/contexts/HubContext';
+import { fetchWithAuth } from "@/lib/fetchWithAuth";
+import { useToast } from '@/hooks/use-toast';
+import { useAuth } from "@/components/auth/AuthContext";
+import { Hub } from "@/contexts/HubContext";
 
 interface HubSelectorProps {
   isCollapsed: boolean;
 }
 
+// export const normalizeHubs = (apiData: any[]): Hub[] => {
+//   return apiData.map((item) => ({
+//     id: item.id,
+//     name: item.name,
+//     email: item.email,
+//     roles: item.roles ?? null,
+//     labels: item.labels ?? [],
+//     applications: item.applications ?? null,
+//     description: "", // default
+//     status: "inactive", // default until user picks
+//     createdAt: new Date().toISOString(),
+//   }));
+// };
+
 export const HubSelector: React.FC<HubSelectorProps> = ({ isCollapsed }) => {
-  const { activeHub, hubs, setActiveHub } = useHub();
+  const { activeHub, hubs, setActiveHub ,setHubs} = useHub();
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const baseUrl = window.REACT_APP_CONFIG.API_BASE_URL || "";
+  const getHub = window.REACT_APP_CONFIG.API_ENDPOINTS.GET_HUB || "";
+  const { user, isAuthenticated } = useAuth();
 
+  const normalizeHubs = (apiData: any[]): Hub[] => {
+    return apiData.map((item) => ({
+      id: item.id,
+      name: item.name,
+      email: item.email,
+      roles: item.roles ?? null,
+      labels: item.labels ?? [],
+      applications: item.applications ?? null,
+      description: "", // default
+      status: "inactive", // default until user picks
+      createdAt: new Date().toISOString(),
+    }));
+  };
+
+  
   const handleHubSelect = (hub: typeof activeHub) => {
     if (hub) {
       setActiveHub(hub);
       setIsOpen(false);
     }
   };
+
+  const getHubList = async () => {    
+
+    try {
+      const res = await fetchWithAuth(`${baseUrl}${getHub}?email=${user?.username}`);
+      const data = await res.json();
+
+      console.log("Hub List:", data);
+
+       // Normalize & store in context
+       const normalized = normalizeHubs(data.data || []);
+       setHubs(normalized);
+ 
+       // pick first hub as active by default if none
+       if (normalized.length > 0 && !activeHub) {
+         setActiveHub({ ...normalized[normalized.length -1 ], status: "active" });
+       }    
+    
+    } catch (err) {
+      toast({
+        title: "Failed to load Hub List"        
+      });
+    }
+    
+  }
+
+  useEffect(() => {
+    getHubList();
+  }, []);
 
   const handleAddHub = () => {
     navigate('/hub-setup');
@@ -51,10 +117,7 @@ export const HubSelector: React.FC<HubSelectorProps> = ({ isCollapsed }) => {
                   <p className="text-xs font-medium text-sidebar-foreground/70">Active Hub</p>
                   <p className="text-sm font-semibold text-sidebar-foreground truncate">
                     {activeHub.name}
-                  </p>
-                  <p className="text-xs text-sidebar-foreground/60">
-                    {activeHub.repositoryCount} repositories
-                  </p>
+                  </p>                  
                 </div>
               )}
             </div>
@@ -69,10 +132,7 @@ export const HubSelector: React.FC<HubSelectorProps> = ({ isCollapsed }) => {
           align="start"
           sideOffset={8}
         >
-          <div className="space-y-1">
-            <div className="px-2 py-1.5">
-              <p className="text-xs font-medium text-sidebar-foreground/70">Select Hub</p>
-            </div>
+          <div className="space-y-1">            
             
             {hubs.map((hub) => (
               <Button
@@ -99,10 +159,7 @@ export const HubSelector: React.FC<HubSelectorProps> = ({ isCollapsed }) => {
                           Active
                         </Badge>
                       )}
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      {hub.repositoryCount} repositories
-                    </p>
+                    </div>                   
                   </div>
                 </div>
               </Button>
