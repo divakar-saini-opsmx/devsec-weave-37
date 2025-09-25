@@ -22,7 +22,8 @@ const AuthCallback = () => {
         console.log("User:", user);
         localStorage.setItem("token", "true");        
         setIsAuthenticated(true); // ✅ trigger rerender
-        navigate("/");
+        //navigate("/");
+        navigate('/hub-setup');
       })
       .catch(() => {
         navigate("/login");
