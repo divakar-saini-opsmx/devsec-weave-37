@@ -99,16 +99,16 @@ const formatDate = (dateString: string) => {
   });
 };
 
-export function RepositoryDashboard({ repository }: RepositoryDashboardProps) {
-  const totalFindings = repository.findings.critical + repository.findings.high + 
-                       repository.findings.medium + repository.findings.low;
+export function RepositoryDashboard() {
+  // const totalFindings = repository.findings.critical + repository.findings.high + 
+  //                      repository.findings.medium + repository.findings.low;
 
-  const vulnerabilityData = [
-    { name: 'Critical', value: repository.findings.critical, color: COLORS[0] },
-    { name: 'High', value: repository.findings.high, color: COLORS[1] },
-    { name: 'Medium', value: repository.findings.medium, color: COLORS[2] },
-    { name: 'Low', value: repository.findings.low, color: COLORS[3] },
-  ].filter(item => item.value > 0);
+  // const vulnerabilityData = [
+  //   { name: 'Critical', value: repository.findings.critical, color: COLORS[0] },
+  //   { name: 'High', value: repository.findings.high, color: COLORS[1] },
+  //   { name: 'Medium', value: repository.findings.medium, color: COLORS[2] },
+  //   { name: 'Low', value: repository.findings.low, color: COLORS[3] },
+  // ].filter(item => item.value > 0);
 
   return (
     <div className="space-y-6">
@@ -197,7 +197,7 @@ export function RepositoryDashboard({ repository }: RepositoryDashboardProps) {
           <CardContent>
             <ResponsiveContainer width="100%" height={200}>
               <PieChart>
-                <Pie
+                {/* <Pie
                   data={vulnerabilityData}
                   cx="50%"
                   cy="50%"
@@ -208,7 +208,7 @@ export function RepositoryDashboard({ repository }: RepositoryDashboardProps) {
                   {vulnerabilityData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
-                </Pie>
+                </Pie> */}
                 <Tooltip />
               </PieChart>
             </ResponsiveContainer>

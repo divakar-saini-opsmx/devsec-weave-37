@@ -23,13 +23,15 @@ interface Repository {
 
 interface Finding {
   id: string;
-  severity: 'Critical' | 'High' | 'Medium' | 'Low';
-  description: string;
+ // severity: 'Critical' | 'High' | 'Medium' | 'Low';
+  //description: string;
   ruleName?: string;
   packageName?: string;
   cveId?: string;
   filePath?: string;
-  confidence?: 'High' | 'Medium' | 'Low';
+  //confidence?: 'High' | 'Medium' | 'Low';
+  severity: 'critical' | 'high' | 'medium' | 'low';
+  confidence: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
   codeSnippet?: string;
   currentVersion?: string;
   upgradeToVersion?: string;
@@ -64,14 +66,16 @@ const formatDate = (dateString: string) => {
   });
 };
 
-export function RepositoryFindings({ repository }: RepositoryFindingsProps) {
+export function RepositoryFindings() {
   const [selectedFinding, setSelectedFinding] = useState<Finding | null>(null);
   const [remediationFinding, setRemediationFinding] = useState<Finding | null>(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isRemediationOpen, setIsRemediationOpen] = useState(false);
 
-  const totalFindings = repository.findings.critical + repository.findings.high + 
-                       repository.findings.medium + repository.findings.low;
+  //console.log("Repository in RepositoryFindings:", repo);
+
+  // const totalFindings = repository.findings.critical + repository.findings.high + 
+  //                      repository.findings.medium + repository.findings.low;
 
   const handleRemediate = (finding: Finding) => {
     setRemediationFinding(finding);

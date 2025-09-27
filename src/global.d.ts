@@ -11,6 +11,9 @@ declare global {
           AUTH_LOGOUT: string;
           GET_HUB: string;
           CREATE_HUB: string;
+          GET_REPOSITORY: string;
+          GET_SAST: string;
+          SAST_REMEDIATION: string;
           // Add other endpoints as needed
          
         }        

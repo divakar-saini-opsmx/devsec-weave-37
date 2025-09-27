@@ -25,7 +25,9 @@ interface ScaFinding {
   packageName: string;
   vulnerability: string;
   cveId: string;
-  severity: 'Critical' | 'High' | 'Medium' | 'Low';
+  //severity: 'Critical' | 'High' | 'Medium' | 'Low';
+  severity: 'critical' | 'high' | 'medium' | 'low';
+  confidence: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
   currentVersion: string;
   upgradeToVersion: string;
   description: string;
@@ -37,7 +39,8 @@ const mockScaFindings: ScaFinding[] = [
     packageName: 'lodash',
     vulnerability: 'Prototype Pollution',
     cveId: 'CVE-2019-10744',
-    severity: 'Critical',
+    severity: 'critical',
+    confidence : 'CRITICAL',
     currentVersion: '4.17.4',
     upgradeToVersion: '4.17.21',
     description: 'Prototype pollution vulnerability in lodash allows modification of object properties'
@@ -47,7 +50,8 @@ const mockScaFindings: ScaFinding[] = [
     packageName: 'axios',
     vulnerability: 'Server-Side Request Forgery',
     cveId: 'CVE-2020-28168',
-    severity: 'High',
+    severity: 'high',
+    confidence : 'HIGH',
     currentVersion: '0.18.0',
     upgradeToVersion: '0.21.4',
     description: 'SSRF vulnerability in axios HTTP client library'
@@ -57,7 +61,8 @@ const mockScaFindings: ScaFinding[] = [
     packageName: 'express',
     vulnerability: 'Open Redirect',
     cveId: 'CVE-2022-24999',
-    severity: 'Medium',
+    severity: 'medium',
+    confidence : 'MEDIUM',
     currentVersion: '4.16.4',
     upgradeToVersion: '4.18.2',
     description: 'Open redirect vulnerability in express.js framework'
@@ -67,7 +72,8 @@ const mockScaFindings: ScaFinding[] = [
     packageName: 'moment',
     vulnerability: 'ReDoS Attack',
     cveId: 'CVE-2017-18214',
-    severity: 'Low',
+    severity: 'low',
+    confidence : 'LOW',
     currentVersion: '2.18.1',
     upgradeToVersion: '2.29.4',
     description: 'Regular expression denial of service in moment.js'

@@ -1,4 +1,4 @@
-import React, { useState ,useEffect} from 'react';
+import React, { useState ,useEffect, act} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronUp, Plus, Circle } from 'lucide-react';
 import {
@@ -14,6 +14,7 @@ import { fetchWithAuth } from "@/lib/fetchWithAuth";
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from "@/components/auth/AuthContext";
 import { Hub } from "@/contexts/HubContext";
+import { set } from 'date-fns';
 
 interface HubSelectorProps {
   isCollapsed: boolean;
@@ -77,9 +78,15 @@ export const HubSelector: React.FC<HubSelectorProps> = ({ isCollapsed }) => {
        setHubs(normalized);
  
        // pick first hub as active by default if none
-       if (normalized.length > 0 && !activeHub) {
-         setActiveHub({ ...normalized[normalized.length -1 ], status: "active" });
-       }    
+      //  if (normalized.length > 0 && !activeHub) {
+      //    setActiveHub({ ...normalized[normalized.length -1 ], status: "active" });
+      //  }   
+       const activeHubFromStorage = localStorage.getItem('activeHub');
+       if (activeHubFromStorage) {
+         const parsedHub = JSON.parse(activeHubFromStorage);
+         setActiveHub(parsedHub);
+       }
+       
     
     } catch (err) {
       toast({

@@ -26,7 +26,11 @@ const loadConfig = async () => {
         AUTH_LOGIN: "/auth/login",
         AUTH_LOGOUT: "/auth/logout",
         GET_HUB: "/api/hublist",
-        CREATE_HUB: "/api/createhub"   
+        CREATE_HUB: "/api/createhub",
+        GET_REPOSITORY: "/api/v1/projects/list/summary/",
+        GET_SAST: "/api/v1/vuln/list/sast",
+        SAST_REMEDIATION: "api/v1/remediations/sast"
+        // Add other endpoints as needed   
       }        
     };
   }

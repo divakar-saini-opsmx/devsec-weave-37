@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState ,useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -16,9 +16,16 @@ import {
   Clock
 } from 'lucide-react';
 import { useHub } from "@/contexts/HubContext";
+import { fetchWithAuth } from "@/lib/fetchWithAuth";
+import { useToast } from '@/hooks/use-toast';
+import { set } from 'date-fns';
+// import dayjs from "dayjs";
+// import relativeTime from "dayjs/plugin/relativeTime";
 
 interface Repository {
   id: string;
+  projectId: string;
+  organization : string;
   name: string;
   branch: string;
   status: 'Not Scanned' | 'In Progress' | 'Completed';
@@ -32,32 +39,32 @@ interface Repository {
 }
 
 // Mock data for demonstration
-const mockRepositories: Repository[] = [
-  {
-    id: '1',
-    name: 'frontend-app',
-    branch: 'main',
-    status: 'Completed',
-    issues: { critical: 2, high: 4, medium: 1, low: 3 },
-    lastScan: '2 hours ago'
-  },
-  {
-    id: '2',
-    name: 'api-service',
-    branch: 'develop',
-    status: 'In Progress',
-    issues: { critical: 0, high: 0, medium: 0, low: 0 },
-    lastScan: undefined
-  },
-  {
-    id: '3',
-    name: 'payment-gateway',
-    branch: 'main',
-    status: 'Completed',
-    issues: { critical: 1, high: 2, medium: 5, low: 1 },
-    lastScan: '1 day ago'
-  }
-];
+// const mockRepositories: Repository[] = [
+//   {
+//     id: '1',
+//     name: 'frontend-app',
+//     branch: 'main',
+//     status: 'Completed',
+//     issues: { critical: 2, high: 4, medium: 1, low: 3 },
+//     lastScan: '2 hours ago'
+//   },
+//   {
+//     id: '2',
+//     name: 'api-service',
+//     branch: 'develop',
+//     status: 'In Progress',
+//     issues: { critical: 0, high: 0, medium: 0, low: 0 },
+//     lastScan: undefined
+//   },
+//   {
+//     id: '3',
+//     name: 'payment-gateway',
+//     branch: 'main',
+//     status: 'Completed',
+//     issues: { critical: 1, high: 2, medium: 5, low: 1 },
+//     lastScan: '1 day ago'
+//   }
+// ];
 
 const getStatusIcon = (status: Repository['status']) => {
   switch (status) {
@@ -116,24 +123,92 @@ const IssuesSummary = ({ issues }: { issues: Repository['issues']}) => {
 
 export default function Repositories() {
   const navigate = useNavigate();
-  const [repositories, setRepositories] = useState<Repository[]>(mockRepositories);
+  const [repositories, setRepositories] = useState<Repository[]>([]);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isGitHubConnected, setIsGitHubConnected] = useState(true);
   const { activeHub } = useHub();
+  const { toast } = useToast(); 
+  const baseUrl = window.REACT_APP_CONFIG.API_BASE_URL || "";
+  const getRepository = window.REACT_APP_CONFIG.API_ENDPOINTS.GET_REPOSITORY || "";
+
+  const getRepositoryList = async () => {    
+
+    try {
+      const res = await fetchWithAuth(`${baseUrl}${getRepository}${activeHub?.id}`);
+      const data = await res.json();
+
+      console.log("Repositoy List:", data);
+
+      const pocessResp = transformApiResponse(data);
+      console.log(pocessResp);
+      setRepositories(prev => [...(prev ?? []), ...pocessResp]);
+     // console.log("respo list",repositories);
+      
+    
+    } catch (err) {     
+      toast({
+        title: "Failed to load Repo List"        
+      });
+    }
+    
+  }
+
+  useEffect(() => {
+    getRepositoryList();
+  }, []);
+
+
+
+
+const transformApiResponse = (apiResponse) => {
+  const results = [];
+
+  apiResponse.data.projectSummaryResponse.forEach((project) => {
+   
+    const { projectId, summaryMetaData, data } = project;
+
+    // each org inside data
+    Object.keys(data).forEach((orgKey) => {
+      const repos = data[orgKey];
+
+      Object.keys(repos).forEach((repoName, repoIndex) => {
+        const repoScans = repos[repoName];
+
+        repoScans.forEach((scan, scanIndex) => {
+          results.push({
+            id: `${repoIndex + 1}-${scanIndex + 1}`,
+            projectId: projectId,
+            organization : orgKey,
+            name: repoName,
+            branch: scan.branch || "-",
+            status: scan.status || "Unknown",
+            issues: { critical: 0, high: 0, medium: 0, low: 0 }, // <-- default, update if API has issues
+            lastScan: scan.lastScannedAt
+              ? scan.lastScannedAt
+              : undefined,
+          });
+        });
+      });
+    });
+  });
+
+  return results;
+}
+
 
   const handleScan = (repoId: string) => {
     navigate(`/repositories/${repoId}/scan`);
   };
 
   const handleAddRepository = (repoData: any) => {
-    const newRepo: Repository = {
-      id: Date.now().toString(),
-      name: repoData.repository,
-      branch: repoData.branch,
-      status: 'Not Scanned',
-      issues: { critical: 0, high: 0, medium: 0, low: 0 }
-    };
-    setRepositories(prev => [...prev, newRepo]);
+    // const newRepo: Repository = {
+    //   id: Date.now().toString(),
+    //   name: repoData.repository,
+    //   branch: repoData.branch,
+    //   status: 'Not Scanned',
+    //   issues: { critical: 0, high: 0, medium: 0, low: 0 }
+    // };
+    // setRepositories(prev => [...prev, newRepo]);
     setIsGitHubConnected(true);
   };
 
@@ -223,9 +298,9 @@ export default function Repositories() {
         )}
       </div>
 
-      {repositories.length === 0 ? (
+      {/* {repositories.length === 0 ? (
         <EmptyState />
-      ) : (
+      ) : ( */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -293,7 +368,7 @@ export default function Repositories() {
                             ReScan
                           </Button>
                         )}
-                        <Button size="sm" variant="ghost" className="h-8"  onClick={() => navigate(`/repositories/${repo.id}`)}>
+                        <Button size="sm" variant="ghost" className="h-8"  onClick={() => navigate(`/repositories/${repo.projectId}/${repo.organization}/${repo.name}/${repo.branch}`)}>
                           <Eye className="h-3 w-3 mr-1" />
                           View
                         </Button>
@@ -305,7 +380,7 @@ export default function Repositories() {
             </Table>
           </CardContent>
         </Card>
-      )}
+      {/* )} */}
 
       <AddRepositoryDialog
         open={isAddDialogOpen}

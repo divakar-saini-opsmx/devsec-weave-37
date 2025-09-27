@@ -54,24 +54,25 @@ const mockRepositories = {
 };
 
 export default function RepositoryDetailsPage() {
-  const { repoId } = useParams<{ repoId: string }>();
+  //const { repoId } = useParams<{ repoId: string }>();
+  const { projectId, organization, repository, branch } = useParams();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   
   const defaultTab = searchParams.get('tab') === 'findings' ? 'findings' : 'dashboard';
 
-  const repository = repoId ? mockRepositories[repoId as keyof typeof mockRepositories] : null;
+ // const repository = repoId ? mockRepositories[repoId as keyof typeof mockRepositories] : null;
 
-  if (!repository) {
-    return (
-      <div className="p-8 text-center">
-        <p className="text-muted-foreground">Repository not found</p>
-        <Button onClick={() => navigate('/repositories')} className="mt-4">
-          Back to Repositories
-        </Button>
-      </div>
-    );
-  }
+  // if (!repository) {
+  //   return (
+  //     <div className="p-8 text-center">
+  //       <p className="text-muted-foreground">Repository not found</p>
+  //       <Button onClick={() => navigate('/repositories')} className="mt-4">
+  //         Back to Repositories
+  //       </Button>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="p-6 space-y-6">
@@ -85,7 +86,7 @@ export default function RepositoryDetailsPage() {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage>{repository.name}</BreadcrumbPage>
+            <BreadcrumbPage>{repository}</BreadcrumbPage>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
@@ -132,11 +133,11 @@ export default function RepositoryDetailsPage() {
         </TabsList>
 
         <TabsContent value="dashboard">
-          <RepositoryDashboard repository={repository} />
+          <RepositoryDashboard />
         </TabsContent>
 
         <TabsContent value="findings">
-          <RepositoryFindings repository={repository} />
+          <RepositoryFindings  />
         </TabsContent>
       </Tabs>
     </div>

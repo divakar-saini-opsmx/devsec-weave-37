@@ -73,7 +73,7 @@ const LayoutWrapper = () => {
             <Route path="repositories/:repoId/scan" element={<ScanConfigurationPage />} />
             <Route path="repositories/:repoId/scan/status" element={<ScanStatusPage />} />
             {/* <Route path="repositories/:repoId/findings" element={<FindingsPage />} /> */}
-            <Route path="repositories/:repoId" element={<RepositoryDetailsPage />} />
+            <Route path="repositories/:projectId/:organization/:repository/:branch" element={<RepositoryDetailsPage />} />
             <Route path="scans" element={<div className="p-8 text-center text-muted-foreground">Scans & Reports page coming soon...</div>} />
             
             <Route path="integrations" element={<Integrations />} />

@@ -93,7 +93,7 @@ const HubSetup = () => {
     }
   
     useEffect(() => {
-      getHubList();
+      //getHubList();
     }, []);
 
   const handleCreateHub = async (e: React.FormEvent) => {
@@ -151,6 +151,7 @@ const HubSetup = () => {
             return [...updated, newHub];
           });
           setActiveHub(newHub);
+          localStorage.setItem('activeHub', JSON.stringify(newHub));
       
           toast({
             title: "Hub created successfully!",

@@ -30,11 +30,11 @@ const Auth = () => {
     // }, 1500);
   };
 
-  // const handleGoogleLogin1 = () => {   
-  //   //window.location.href = `${baseUrl1}${googleLogin}`;
-  //   window.location.href = baseUrl+googleLogin; 
+  const handleGoogleLogin1 = () => {   
+    //window.location.href = `${baseUrl1}${googleLogin}`;
+    window.location.href = baseUrl+googleLogin; 
   
-  // };
+  };
 
   const handleGoogleLogin = async () => {
   
