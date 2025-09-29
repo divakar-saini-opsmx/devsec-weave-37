@@ -193,7 +193,7 @@ export function SastFindingsTable({ onRemediate, onViewDetail }: SastFindingsTab
   return (
     <div className="space-y-4">
       {/* Filter Controls */}
-      <div className="flex items-center justify-between">
+      {/* <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Shield className="h-4 w-4 text-primary" />
           <span className="font-medium">SAST Findings ({SASTresults.length})</span>
@@ -211,7 +211,7 @@ export function SastFindingsTable({ onRemediate, onViewDetail }: SastFindingsTab
             <SelectItem value="Low">Low</SelectItem>
           </SelectContent>
         </Select>
-      </div>
+      </div> */}
 
       {/* Findings Table */}
       <Card>
@@ -260,14 +260,14 @@ export function SastFindingsTable({ onRemediate, onViewDetail }: SastFindingsTab
                         <Eye className="h-3 w-3 mr-1" />
                         View
                       </Button>
-                      <Button
+                      {/* <Button
                         variant="outline"
                         size="sm"
                         onClick={() => handleIgnore(finding.id)}
                       >
                         <X className="h-3 w-3 mr-1" />
                         Ignore
-                      </Button>
+                      </Button> */}
                     </div>
                   </TableCell>
                 </TableRow>

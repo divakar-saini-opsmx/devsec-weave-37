@@ -190,7 +190,7 @@ export default function ScanPage() {
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink 
-              onClick={() => navigate('/repositories')}
+              onClick={() => navigate('/projects')}
               className="cursor-pointer"
             >
               Repositories
@@ -367,12 +367,12 @@ export default function ScanPage() {
                   <div className="flex items-center justify-between">
                     <h4 className="font-medium">Security Issues Found</h4>
                     <div className="flex gap-2">
-                      <Button onClick={() => navigate(`/repositories/${repoId}?tab=findings`)} size="sm">
+                      <Button onClick={() => navigate(`/projects/${repoId}?tab=findings`)} size="sm">
                         <Eye className="h-3 w-3 mr-2" />
                         View Detailed Findings
                       </Button>
-                      <Button onClick={() => navigate('/repositories')} variant="outline" size="sm">
-                        Back to Repositories
+                      <Button onClick={() => navigate('/projects')} variant="outline" size="sm">
+                        Back to Projects
                       </Button>
                     </div>
                   </div>

@@ -58,7 +58,7 @@ interface ChatMessage {
   customType?: 'diff' | 'normal';
 }
 
-interface RemediationChatProps {
+interface RemediationChatSCAProps {
   finding: Finding | null;
   isOpen: boolean;
   onClose: () => void;
@@ -79,7 +79,7 @@ const getSeverityColor = (severity: string) => {
   }
 };
 
-export function RemediationChat({ finding, isOpen, onClose }: RemediationChatProps) {
+export function RemediationChatSCA({ finding, isOpen, onClose }: RemediationChatSCAProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -91,7 +91,7 @@ export function RemediationChat({ finding, isOpen, onClose }: RemediationChatPro
   const [fixMessage, setFixMessage] = useState("");
   const { toast } = useToast(); 
 
-  console.log("Remediate SAST Finding:", finding);  
+  console.log("Remediate SCA Finding:", finding);  
 
 const simulateStreamingExecution = async (content: string, messageId: string) => {
   // setIsStreaming(true);
@@ -150,7 +150,7 @@ const simulateStreamingExecution = async (content: string, messageId: string) =>
             "file_path": finding.metadata.file_path,
             "line_no": finding.metadata.line
           }; 
-          const res = await fetchWithAuth(`${baseUrl}${SASTRemediationUrl}?action=${type}&projectId=abcd`, {        
+          const res = await fetchWithAuth(`${baseUrl}${SASTRemediationUrl}?action=${type}`, {        
             method: "POST",           
             body: JSON.stringify(postJson)           
           });    

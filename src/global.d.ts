@@ -12,10 +12,16 @@ declare global {
           GET_HUB: string;
           CREATE_HUB: string;
           GET_REPOSITORY: string;
+          CREATE_REPOSITORY: string;
           GET_SAST: string;
           SAST_REMEDIATION: string;
-          // Add other endpoints as needed
-         
+          GET_SCA: string;
+          GITHUB_PROVIDER: string;
+          GET_INTEGRATIONS: string;
+          CREATE_INTEGRATION: string;
+          DELETE_INTEGRATION: string;  
+          GET_REPO_USER_ORG: string;     
+          // Add other endpoints as needed         
         }        
       [key: string]: any;
     };

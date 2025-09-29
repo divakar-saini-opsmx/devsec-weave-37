@@ -29,8 +29,8 @@ const navigationItems = [
     badge: null
   },
   {
-    title: 'Repositories',
-    url: '/repositories',
+    title: 'Projects',
+    url: '/projects',
     icon: GitBranch,
     badge: null
   },

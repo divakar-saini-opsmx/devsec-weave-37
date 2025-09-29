@@ -23,6 +23,7 @@ import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { AuthProvider } from "@/components/auth/AuthContext"; 
 import AuthCallback from "./pages/authCallback";
 import queryClient from "@/lib/queryClient";
+import HubGate from "./components/auth/HubGate";
 
 //const queryClient = new QueryClient();
 
@@ -52,28 +53,34 @@ const LayoutWrapper = () => {
           {/* <Route path="/login" element={<Auth />} /> */}
           <Route path="/hub-setup" element={
             <ProtectedRoute>
-              <HubSetup />
+              <HubGate>
+                <HubSetup />
+              </HubGate>
             </ProtectedRoute>
           } />
           <Route path="/scan-config" element={
             <ProtectedRoute>
-              <ScanConfig />
+              <HubGate>
+                <ScanConfig />
+              </HubGate>             
             </ProtectedRoute>
           } />
           <Route path="/" element={
             <ProtectedRoute>
-              <AppLayout />
+              <HubGate>
+                <AppLayout />
+              </HubGate>              
             </ProtectedRoute>
           }>
-            <Route path="/" element={<Auth />} />
+            {/* <Route path="/" element={<Auth />} /> */}
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="dashboard" element={<Dashboard />} />
-            <Route path="repositories" element={<Repositories />} />
+            <Route path="projects" element={<Repositories />} />
             {/* <Route path="repositories/:repoId/scan" element={<ScanPage />} /> */}
-            <Route path="repositories/:repoId/scan" element={<ScanConfigurationPage />} />
-            <Route path="repositories/:repoId/scan/status" element={<ScanStatusPage />} />
+            <Route path="projects/:repoId/scan" element={<ScanConfigurationPage />} />
+            <Route path="projects/:projectId/scan/status" element={<ScanStatusPage />} />
             {/* <Route path="repositories/:repoId/findings" element={<FindingsPage />} /> */}
-            <Route path="repositories/:projectId/:organization/:repository/:branch" element={<RepositoryDetailsPage />} />
+            <Route path="projects/:projectId/:organization/:repository/:branch" element={<RepositoryDetailsPage />} />
             <Route path="scans" element={<div className="p-8 text-center text-muted-foreground">Scans & Reports page coming soon...</div>} />
             
             <Route path="integrations" element={<Integrations />} />

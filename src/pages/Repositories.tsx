@@ -130,20 +130,19 @@ export default function Repositories() {
   const { toast } = useToast(); 
   const baseUrl = window.REACT_APP_CONFIG.API_BASE_URL || "";
   const getRepository = window.REACT_APP_CONFIG.API_ENDPOINTS.GET_REPOSITORY || "";
+  const createRepository = window.REACT_APP_CONFIG.API_ENDPOINTS.CREATE_REPOSITORY || "";
+  
 
   const getRepositoryList = async () => {    
 
     try {
       const res = await fetchWithAuth(`${baseUrl}${getRepository}${activeHub?.id}`);
       const data = await res.json();
-
       console.log("Repositoy List:", data);
-
       const pocessResp = transformApiResponse(data);
       console.log(pocessResp);
       setRepositories(prev => [...(prev ?? []), ...pocessResp]);
-     // console.log("respo list",repositories);
-      
+     // console.log("respo list",repositories);      
     
     } catch (err) {     
       toast({
@@ -197,19 +196,61 @@ const transformApiResponse = (apiResponse) => {
 
 
   const handleScan = (repoId: string) => {
-    navigate(`/repositories/${repoId}/scan`);
+    navigate(`/projects/${repoId}/scan`);
   };
 
-  const handleAddRepository = (repoData: any) => {
-    // const newRepo: Repository = {
-    //   id: Date.now().toString(),
-    //   name: repoData.repository,
-    //   branch: repoData.branch,
-    //   status: 'Not Scanned',
-    //   issues: { critical: 0, high: 0, medium: 0, low: 0 }
-    // };
-    // setRepositories(prev => [...prev, newRepo]);
-    setIsGitHubConnected(true);
+  // const handleAddRepository = (repoData: any) => {
+
+
+  //   // const newRepo: Repository = {
+  //   //   id: Date.now().toString(),
+  //   //   name: repoData.repository,
+  //   //   branch: repoData.branch,
+  //   //   status: 'Not Scanned',
+  //   //   issues: { critical: 0, high: 0, medium: 0, low: 0 }
+  //   // };
+  //   // setRepositories(prev => [...prev, newRepo]);
+  //   setIsGitHubConnected(true);
+  // };
+
+  const handleAddRepository = async (repoData : any) => {
+   
+   console.log("Repo Data from dialog", repoData);
+    try {  
+  
+          const postJson = {
+            "hub_id": activeHub.id ,
+            "name": repoData.name,
+            "organisation": repoData.userOrOrganization,
+            "type": repoData.type,
+            "repoName": repoData.repository,
+            "integration_id": repoData.integration
+        }
+        
+          const res = await fetchWithAuth(`${baseUrl}${createRepository}`, { 
+            method: "POST",           
+            body: JSON.stringify(postJson),            
+          });    
+          
+          if (!res.ok) throw new Error("Something went wrong");
+  
+          const result = await res.json();
+          console.log("Response POst Project Save", result);
+          const projectId = result.data
+          navigate(`/projects/${projectId}/scan/status`);
+  
+          
+      }
+      catch (e) {
+        console.error("Failed Project Creation", e);
+        toast({
+          title: "Project creation failed!",
+          description: `${e}`
+        });
+      } finally {
+        
+      }
+  
   };
 
   const EmptyState = () => (
@@ -228,7 +269,7 @@ const transformApiResponse = (apiResponse) => {
         className="px-8 py-3 h-auto"
       >
         <Plus className="h-4 w-4 mr-2" />
-        Add Your First Repository
+        Add Your First Project
       </Button>
       <p className="text-sm text-muted-foreground mt-4 text-center">
         Once connected, we'll scan your repository for security vulnerabilities
@@ -293,26 +334,26 @@ const transformApiResponse = (apiResponse) => {
         {repositories.length > 0 && (
           <Button onClick={() => setIsAddDialogOpen(true)}>
             <Plus className="h-4 w-4 mr-2" />
-            Add Repository
+            Add Project
           </Button>
         )}
       </div>
 
-      {/* {repositories.length === 0 ? (
+      {repositories.length === 0 ? (
         <EmptyState />
-      ) : ( */}
+      ) : (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <GitBranch className="h-5 w-5" />
-              Repository List ({repositories.length})
+              Projects List ({repositories.length})
             </CardTitle>
           </CardHeader>
           <CardContent>
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Repository</TableHead>
+                  <TableHead>Name</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Issues Summary</TableHead>
                   <TableHead>Last Scan</TableHead>
@@ -348,7 +389,7 @@ const transformApiResponse = (apiResponse) => {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2 justify-end">
-                        {repo.status === 'Not Scanned' ? (
+                        {/* {repo.status === 'Not Scanned' ? (
                           <Button
                             size="sm"
                             onClick={() => handleScan(repo.id)}
@@ -367,8 +408,8 @@ const transformApiResponse = (apiResponse) => {
                             <RotateCcw className="h-3 w-3 mr-1" />
                             ReScan
                           </Button>
-                        )}
-                        <Button size="sm" variant="ghost" className="h-8"  onClick={() => navigate(`/repositories/${repo.projectId}/${repo.organization}/${repo.name}/${repo.branch}`)}>
+                        )} */}
+                        <Button size="sm" variant="ghost" className="h-8"  onClick={() => navigate(`/projects/${repo.projectId}/${repo.organization}/${repo.name}/${repo.branch}`)}>
                           <Eye className="h-3 w-3 mr-1" />
                           View
                         </Button>
@@ -380,7 +421,7 @@ const transformApiResponse = (apiResponse) => {
             </Table>
           </CardContent>
         </Card>
-      {/* )} */}
+      )}
 
       <AddRepositoryDialog
         open={isAddDialogOpen}

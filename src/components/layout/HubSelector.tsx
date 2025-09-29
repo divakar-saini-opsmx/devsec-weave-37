@@ -20,19 +20,7 @@ interface HubSelectorProps {
   isCollapsed: boolean;
 }
 
-// export const normalizeHubs = (apiData: any[]): Hub[] => {
-//   return apiData.map((item) => ({
-//     id: item.id,
-//     name: item.name,
-//     email: item.email,
-//     roles: item.roles ?? null,
-//     labels: item.labels ?? [],
-//     applications: item.applications ?? null,
-//     description: "", // default
-//     status: "inactive", // default until user picks
-//     createdAt: new Date().toISOString(),
-//   }));
-// };
+
 
 export const HubSelector: React.FC<HubSelectorProps> = ({ isCollapsed }) => {
   const { activeHub, hubs, setActiveHub ,setHubs} = useHub();
@@ -97,7 +85,7 @@ export const HubSelector: React.FC<HubSelectorProps> = ({ isCollapsed }) => {
   }
 
   useEffect(() => {
-    getHubList();
+   // getHubList();
   }, []);
 
   const handleAddHub = () => {

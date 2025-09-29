@@ -14,12 +14,15 @@ import { useHub } from '@/contexts/HubContext';
 import { fetchWithAuth } from "@/lib/fetchWithAuth";
 import { useAuth } from "@/components/auth/AuthContext";
 import { Hub } from "@/contexts/HubContext";
+import CryptoJS from 'crypto-js';
 
 const HubSetup = () => {
 
   const baseUrl = window.REACT_APP_CONFIG.API_BASE_URL || "";
   const getHub = window.REACT_APP_CONFIG.API_ENDPOINTS.GET_HUB || "";
   const createHub = window.REACT_APP_CONFIG.API_ENDPOINTS.CREATE_HUB || "";
+  const getGitHubProvider = window.REACT_APP_CONFIG.API_ENDPOINTS.GITHUB_PROVIDER || "";
+  const createIntegration = window.REACT_APP_CONFIG.API_ENDPOINTS.CREATE_INTEGRATION || "";
   const navigate = useNavigate();
   const { toast } = useToast();  
   const [formData, setFormData] = useState({
@@ -31,6 +34,10 @@ const HubSetup = () => {
   const [hubCreated, setHubCreated] = useState(false); 
   const { user, isAuthenticated } = useAuth();
   const { activeHub, hubs, setActiveHub ,setHubs} = useHub();
+  const [receivedMessage, setReceivedMessage] = useState(null);
+  const [installationId, setInstallationId] = useState(null);
+  const [encryptSecretKey, setEncryptSecretKey] = useState(null); 
+  const { setOnboarding } = useHub();
 
   const handleCreateHub1 = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -81,7 +88,7 @@ const HubSetup = () => {
         const data = await res.json();
         
         if(data.data.length > 0){
-          navigate('/repositories');
+          navigate('/projects');
         }        
       
       } catch (err) {
@@ -93,10 +100,12 @@ const HubSetup = () => {
     }
   
     useEffect(() => {
-      //getHubList();
+      //getHubList();      
+      
     }, []);
 
   const handleCreateHub = async (e: React.FormEvent) => {
+   
     e.preventDefault();
     
     if (!formData.name.trim()) {
@@ -109,6 +118,8 @@ const HubSetup = () => {
     }
 
     setIsCreating(true);
+
+
    
     try {
           const postJson = {
@@ -116,14 +127,8 @@ const HubSetup = () => {
             "tag": formData.description,
             "email": user?.username
           };
-         
-          //const res = await fetch(`http://127.0.0.1:5000/conversation`, {      
           const res = await fetchWithAuth(`${baseUrl}${createHub}`, { 
-            method: "POST",
-            // headers: {
-            //   "Content-Type": "application/json",           
-            // },
-            // credentials: 'include',
+            method: "POST",           
             body: JSON.stringify(postJson),            
           });    
           
@@ -152,6 +157,7 @@ const HubSetup = () => {
           });
           setActiveHub(newHub);
           localStorage.setItem('activeHub', JSON.stringify(newHub));
+          setOnboarding(true);// <-- enable onboarding so HubGate allows flow
       
           toast({
             title: "Hub created successfully!",
@@ -172,18 +178,112 @@ const HubSetup = () => {
 
   };
 
-  const handleGithubConnect = () => {
-    // Simulate GitHub app connection
-    setTimeout(() => {
-      setGithubConnected(true);
-      localStorage.setItem('githubConnected', 'true');
-      toast({
-        title: "GitHub connected!",
-        description: "Your repositories are now ready for automated security scans."
-      });
-      navigate('/scan-config');
-    }, 1000);
+  // const handleGithubConnect = () => {
+  //   // Simulate GitHub app connection
+  //  // https://{instance-endpoint}/v1/github/auth/installation
+  //   setTimeout(() => {
+  //     setGithubConnected(true);
+  //     localStorage.setItem('githubConnected', 'true');
+  //     toast({
+  //       title: "GitHub connected!",
+  //       description: "Your repositories are now ready for automated security scans."
+  //     });
+  //     navigate('/scan-config');
+  //   }, 1000);
+  // };
+
+  
+  
+  const handleGithubConnect = async () => {
+  
+    try {
+      const res = await fetchWithAuth(`${baseUrl}${getGitHubProvider}`);
+      const data = await res.json();
+      
+      console.log(`Received github auth URL: ${data?.data?.url}`);
+      const githubUrl = data?.data?.url;      
+      // Redirect to Google OAuth
+      window.addEventListener("message", handleMessage); // listen first
+      window.open(githubUrl, "_blank", "width=600,height=700");
+    
+  } catch (error) {
+    console.log(`Git App connection error: ${error.message}`, 'error');
+     // updateStatus(`Login failed: ${error.message}`, 'error');
+  }
+}
+
+const handleMessage = (event) => {
+  if (event.origin !== "https://oauth-bridge.aoa.oes.opsmx.org") {
+    console.warn("Blocked message from:", event.origin);
+    return;
+  }
+
+  setReceivedMessage(event.data);
+
+  if (event.data) {
+
+    handleCreateIntegrator(event.data);
+
+    const installationId =event.data.installation_id ?? event.data.installationId ?? null;
+    const token = event.data.token ?? null;
+    const timestamp = event.data.timestamp ?? null;
+
+    console.log("✅ installationId:", installationId);
+    console.log("✅ token:", token);
+    console.log("✅ timestamp:", timestamp);
+  }
+};
+
+// cleanup 
+useEffect(() => {
+  return () => {
+    window.removeEventListener("message", handleMessage);
   };
+}, []);
+
+const handleCreateIntegrator = async (githubAuthResp) => {  
+  try {  
+        const encryptedToken = encryptToken(githubAuthResp.token ?? "", githubAuthResp.timestamp ?? "");
+        const postJson ={
+          "name": user?.username + activeHub.id,
+          "team_ids": [activeHub.id],
+          "installationId": githubAuthResp.installationId ?? null,
+          "timestamp": githubAuthResp.timestamp ?? null,
+          "token": encryptedToken
+      }
+        const res = await fetchWithAuth(`${baseUrl}${createIntegration}`, { 
+          method: "POST",           
+          body: JSON.stringify(postJson),            
+        });    
+        
+        if (!res.ok) throw new Error("Something went wrong");
+
+        const result = await res.json();
+        console.log("Response POst Integration", result);
+        navigate('/scan-config');
+
+        
+    }
+    catch (e) {
+      console.error("Failed Hub Creation", e);
+      toast({
+        title: "Hub creation failed!",
+        description: `${e}`
+      });
+    } finally {
+      setIsCreating(false);
+    }
+
+};
+
+
+const encryptToken = (token,secretKey) => {
+  const encrypted = CryptoJS.AES.encrypt(token, String(secretKey)).toString();
+  console.log("Encrypted token:", encrypted);
+  return encrypted;
+};
+
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted p-6">

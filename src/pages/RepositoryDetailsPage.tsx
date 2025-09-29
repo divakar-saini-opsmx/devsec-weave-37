@@ -66,9 +66,9 @@ export default function RepositoryDetailsPage() {
   // if (!repository) {
   //   return (
   //     <div className="p-8 text-center">
-  //       <p className="text-muted-foreground">Repository not found</p>
-  //       <Button onClick={() => navigate('/repositories')} className="mt-4">
-  //         Back to Repositories
+  //       <p className="text-muted-foreground">Project not found</p>
+  //       <Button onClick={() => navigate('/projects')} className="mt-4">
+  //         Back to Projects
   //       </Button>
   //     </div>
   //   );
@@ -80,8 +80,8 @@ export default function RepositoryDetailsPage() {
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbLink onClick={() => navigate('/repositories')} className="cursor-pointer">
-              Repositories
+            <BreadcrumbLink onClick={() => navigate('/projects')} className="cursor-pointer">
+              Projects
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
@@ -105,7 +105,7 @@ export default function RepositoryDetailsPage() {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => navigate('/repositories')}
+            onClick={() => navigate('/projects')}
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back
@@ -124,7 +124,7 @@ export default function RepositoryDetailsPage() {
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="dashboard" className="flex items-center gap-2">
             <BarChart3 className="h-4 w-4" />
-            Repository Dashboard
+            Project Dashboard
           </TabsTrigger>
           <TabsTrigger value="findings" className="flex items-center gap-2">
             <Shield className="h-4 w-4" />

@@ -6,6 +6,7 @@ import { SastFindingsTable } from '@/components/scan/SastFindingsTable';
 import { ScaFindingsTable } from '@/components/scan/ScaFindingsTable';
 import { FindingDetailModal } from '@/components/scan/FindingDetailModal';
 import { RemediationChat } from '@/components/scan/RemediationChat';
+import { RemediationChatSCA } from '@/components/scan/RemediationChatSCA';
 import { Shield, Package, Key, FileText, Calendar } from 'lucide-react';
 
 interface Repository {
@@ -72,6 +73,11 @@ export function RepositoryFindings() {
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isRemediationOpen, setIsRemediationOpen] = useState(false);
 
+  const [selectedFindingSCA, setSelectedSCAFinding] = useState<Finding | null>(null);
+  const [remediationSCAFinding, setRemediationSCAFinding] = useState<Finding | null>(null);
+  const [isDetailModalOpenSCA, setIsDetailModalOpenSCA] = useState(false);
+  const [isRemediationSCAOpen, setIsRemediationSCAOpen] = useState(false);
+
   //console.log("Repository in RepositoryFindings:", repo);
 
   // const totalFindings = repository.findings.critical + repository.findings.high + 
@@ -85,6 +91,16 @@ export function RepositoryFindings() {
   const handleViewDetail = (finding: Finding) => {
     setSelectedFinding(finding);
     setIsDetailModalOpen(true);
+  };
+
+  const handleRemediateSCA = (finding: Finding) => {
+    setRemediationSCAFinding(finding);
+    setIsRemediationSCAOpen(true);
+  };
+
+  const handleViewDetailSCA = (finding: Finding) => {
+    setSelectedSCAFinding(finding);
+    setIsDetailModalOpenSCA(true);
   };
 
   return (
@@ -131,7 +147,7 @@ export function RepositoryFindings() {
 
       {/* Findings Sub-tabs */}
       <Tabs defaultValue="sast" className="space-y-4">
-        <TabsList className="grid grid-cols-4 w-full">
+        <TabsList className="grid grid-cols-2 w-full">
           <TabsTrigger value="sast" className="flex items-center gap-2">
             <Shield className="h-4 w-4" />
             SAST Findings
@@ -140,14 +156,14 @@ export function RepositoryFindings() {
             <Package className="h-4 w-4" />
             SCA Findings
           </TabsTrigger>
-          <TabsTrigger value="secrets" className="flex items-center gap-2">
+          {/* <TabsTrigger value="secrets" className="flex items-center gap-2">
             <Key className="h-4 w-4" />
             Secrets
           </TabsTrigger>
           <TabsTrigger value="license" className="flex items-center gap-2">
             <FileText className="h-4 w-4" />
             License Compliance
-          </TabsTrigger>
+          </TabsTrigger> */}
         </TabsList>
 
         <TabsContent value="sast">
@@ -159,12 +175,12 @@ export function RepositoryFindings() {
 
         <TabsContent value="sca">
           <ScaFindingsTable 
-            onRemediate={handleRemediate}
-            onViewDetail={handleViewDetail}
+            onRemediate={handleRemediateSCA}
+            onViewDetail={handleViewDetailSCA}
           />
         </TabsContent>
 
-        <TabsContent value="secrets">
+        {/* <TabsContent value="secrets">
           <Card>
             <CardContent className="p-8 text-center">
               <Key className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
@@ -186,7 +202,7 @@ export function RepositoryFindings() {
               </p>
             </CardContent>
           </Card>
-        </TabsContent>
+        </TabsContent> */}
       </Tabs>
 
       {/* Detail Modal */}
@@ -203,6 +219,19 @@ export function RepositoryFindings() {
         }}
       />
 
+      {/* <FindingDetailModal
+        finding={selectedFinding}
+        isOpen={isDetailModalOpen}
+        onClose={() => {
+          setIsDetailModalOpen(false);
+          setSelectedFinding(null);
+        }}
+        onRemediate={(finding) => {
+          setIsDetailModalOpen(false);
+          handleRemediate(finding);
+        }}
+      /> */}
+
       {/* Remediation Chat */}
       <RemediationChat
         finding={remediationFinding}
@@ -210,6 +239,15 @@ export function RepositoryFindings() {
         onClose={() => {
           setIsRemediationOpen(false);
           setRemediationFinding(null);
+        }}
+      />
+
+    <RemediationChatSCA
+        finding={remediationSCAFinding}
+        isOpen={isRemediationSCAOpen}
+        onClose={() => {
+          setIsRemediationSCAOpen(false);
+          setRemediationSCAFinding(null);
         }}
       />
     </div>

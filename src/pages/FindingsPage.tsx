@@ -101,9 +101,9 @@ export default function FindingsPage() {
   if (!repository) {
     return (
       <div className="p-8 text-center">
-        <p className="text-muted-foreground">Repository not found</p>
-        <Button onClick={() => navigate('/repositories')} className="mt-4">
-          Back to Repositories
+        <p className="text-muted-foreground">Project not found</p>
+        <Button onClick={() => navigate('/projects')} className="mt-4">
+          Back to Projects
         </Button>
       </div>
     );
@@ -138,7 +138,7 @@ export default function FindingsPage() {
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbLink onClick={() => navigate('/repositories')} className="cursor-pointer">
+            <BreadcrumbLink onClick={() => navigate('/projects')} className="cursor-pointer">
               Repositories
             </BreadcrumbLink>
           </BreadcrumbItem>
@@ -159,7 +159,7 @@ export default function FindingsPage() {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => navigate('/repositories')}
+            onClick={() => navigate('/projects')}
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back
