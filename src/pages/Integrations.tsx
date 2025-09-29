@@ -1,16 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState ,useEffect} from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Plus, GitBranch, Settings } from 'lucide-react';
 import { AddIntegrationDialog } from '@/components/integrations/AddIntegrationDialog';
+import { useHub } from "@/contexts/HubContext";
+import { fetchWithAuth } from "@/lib/fetchWithAuth";
+import { useToast } from '@/hooks/use-toast';
 
 interface Integration {
   id: string;
   type: 'GitHub' ;
   name: string;
   status: 'active' | 'connected' | 'disconnected';
+  url: string;
 }
 
 const getStatusBadgeVariant = (status: Integration['status']) => {
@@ -27,30 +31,49 @@ const getStatusBadgeVariant = (status: Integration['status']) => {
 };
 
 const Integrations = () => {
-  const [integrations, setIntegrations] = useState<Integration[]>([
-    {
-      id: '1',
-      type: 'GitHub',
-      name: 'My GitHub Integration',
-      status: 'connected'
-    },
-    // {
-    //   id: '2',
-    //   type: 'GitLab',
-    //   name: 'Company GitLab',
-    //   status: 'active'
-    // }
-  ]);
+  const [integrations, setIntegrations] = useState<Integration[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
+  const baseUrl = window.REACT_APP_CONFIG.API_BASE_URL || "";
+  const getIntegrations = window.REACT_APP_CONFIG.API_ENDPOINTS.GET_INTEGRATIONS || "";
+  const { activeHub } = useHub();
+  const { toast } = useToast(); 
+
+  const getIntegrationList = async () => {    
+
+    try {
+      const res = await fetchWithAuth(`${baseUrl}${getIntegrations}?teamIds=${activeHub?.id}`);
+      const data = await res.json();
+
+      console.log("Integrations List:", data);
+      setIntegrations(data?.data);
+      // const pocessResp = transformApiResponse(data);
+      // console.log(pocessResp);
+      // setRepositories(prev => [...(prev ?? []), ...pocessResp]);
+       //console.log("respo list",repositories);
+      
+    
+    } catch (err) {     
+      toast({
+        title: "Failed to load Integrations List"        
+      });
+    }
+    
+  }
+  
+    useEffect(() => {
+      getIntegrationList();
+    }, []);
+
+
   const handleSaveIntegration = (data: { type: 'GitHub'; name: string }) => {
-    const newIntegration: Integration = {
-      id: Date.now().toString(),
-      type: data.type,
-      name: data.name,
-      status: 'connected'
-    };
-    setIntegrations([...integrations, newIntegration]);
+    // const newIntegration: Integration = {
+    //   id: Date.now().toString(),
+    //   type: data.type,
+    //   name: data.name,
+    //   status: 'connected'
+    // };
+    // setIntegrations([...integrations, newIntegration]);
     setIsDialogOpen(false);
   };
 
@@ -59,9 +82,9 @@ const Integrations = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Integrations</h1>
-          <p className="text-muted-foreground">
+          {/* <p className="text-muted-foreground">
             Manage your repository integrations
-          </p>
+          </p> */}
         </div>
         <Button onClick={() => setIsDialogOpen(true)}>
           <Plus className="mr-2 h-4 w-4" />
@@ -107,7 +130,7 @@ const Integrations = () => {
                       <span className="font-medium">{integration.name}</span>
                     </TableCell>
                     <TableCell>
-                      <span className="text-sm font-medium">{integration.type}</span>
+                      <span className="text-sm font-medium">{integration.url}</span>
                     </TableCell>
                     <TableCell>
                       <Badge variant={getStatusBadgeVariant(integration.status)}>

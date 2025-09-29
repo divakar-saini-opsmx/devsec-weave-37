@@ -82,7 +82,7 @@ export default function ScanConfigurationPage() {
 
   const handleStartScan = () => {
     // Save config and navigate to scan status
-    navigate(`/repositories/${repoId}/scan/status`);
+    navigate(`/projects/${repoId}/scan/status`);
   };
 
   const isConfigValid = () => {
@@ -101,7 +101,7 @@ export default function ScanConfigurationPage() {
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink 
-              onClick={() => navigate('/repositories')}
+              onClick={() => navigate('/projects')}
               className="cursor-pointer"
             >
               Repositories

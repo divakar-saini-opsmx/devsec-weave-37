@@ -54,24 +54,25 @@ const mockRepositories = {
 };
 
 export default function RepositoryDetailsPage() {
-  const { repoId } = useParams<{ repoId: string }>();
+  //const { repoId } = useParams<{ repoId: string }>();
+  const { projectId, organization, repository, branch } = useParams();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   
   const defaultTab = searchParams.get('tab') === 'findings' ? 'findings' : 'dashboard';
 
-  const repository = repoId ? mockRepositories[repoId as keyof typeof mockRepositories] : null;
+ // const repository = repoId ? mockRepositories[repoId as keyof typeof mockRepositories] : null;
 
-  if (!repository) {
-    return (
-      <div className="p-8 text-center">
-        <p className="text-muted-foreground">Repository not found</p>
-        <Button onClick={() => navigate('/repositories')} className="mt-4">
-          Back to Repositories
-        </Button>
-      </div>
-    );
-  }
+  // if (!repository) {
+  //   return (
+  //     <div className="p-8 text-center">
+  //       <p className="text-muted-foreground">Project not found</p>
+  //       <Button onClick={() => navigate('/projects')} className="mt-4">
+  //         Back to Projects
+  //       </Button>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="p-6 space-y-6">
@@ -79,13 +80,13 @@ export default function RepositoryDetailsPage() {
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbLink onClick={() => navigate('/repositories')} className="cursor-pointer">
-              Repositories
+            <BreadcrumbLink onClick={() => navigate('/projects')} className="cursor-pointer">
+              Projects
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage>{repository.name}</BreadcrumbPage>
+            <BreadcrumbPage>{repository}</BreadcrumbPage>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
@@ -104,7 +105,7 @@ export default function RepositoryDetailsPage() {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => navigate('/repositories')}
+            onClick={() => navigate('/projects')}
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back
@@ -123,7 +124,7 @@ export default function RepositoryDetailsPage() {
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="dashboard" className="flex items-center gap-2">
             <BarChart3 className="h-4 w-4" />
-            Repository Dashboard
+            Project Dashboard
           </TabsTrigger>
           <TabsTrigger value="findings" className="flex items-center gap-2">
             <Shield className="h-4 w-4" />
@@ -132,11 +133,11 @@ export default function RepositoryDetailsPage() {
         </TabsList>
 
         <TabsContent value="dashboard">
-          <RepositoryDashboard repository={repository} />
+          <RepositoryDashboard />
         </TabsContent>
 
         <TabsContent value="findings">
-          <RepositoryFindings repository={repository} />
+          <RepositoryFindings  />
         </TabsContent>
       </Tabs>
     </div>

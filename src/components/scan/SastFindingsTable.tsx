@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -18,55 +18,67 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Shield, Eye, MessageSquare, X ,Cog} from 'lucide-react';
+import { useHub } from "@/contexts/HubContext";
+import { fetchWithAuth } from "@/lib/fetchWithAuth";
+import { useToast } from '@/hooks/use-toast';
+import { useParams } from "react-router-dom";
 
 interface SastFinding {
   id: string;
-  ruleName: string;
-  severity: 'Critical' | 'High' | 'Medium' | 'Low';
-  confidence: 'High' | 'Medium' | 'Low';
-  filePath: string;
-  description: string;
-  codeSnippet: string;
+  scanId: string;
+  organization : string;
+  platform : string;
+  repository : string;
+  branch : string;
+  rule_name: string;
+  severity: 'critical' | 'high' | 'medium' | 'low';
+  confidence: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
+  rule_message : string;
+  metadata:{
+    file_path: string;
+    line: number;
+  }
 }
 
-const mockSastFindings: SastFinding[] = [
-  {
-    id: '1',
-    ruleName: 'SQL Injection',
-    severity: 'Critical',
-    confidence: 'High',
-    filePath: 'src/api/users.ts',
-    description: 'SQL injection vulnerability detected in user query',
-    codeSnippet: 'const query = `SELECT * FROM users WHERE id = ${userId}`;'
-  },
-  {
-    id: '2',
-    ruleName: 'XSS Vulnerability',
-    severity: 'High',
-    confidence: 'Medium',
-    filePath: 'src/components/UserProfile.tsx',
-    description: 'Potential XSS vulnerability in user input rendering',
-    codeSnippet: 'dangerouslySetInnerHTML={{ __html: userContent }}'
-  },
-  {
-    id: '3',
-    ruleName: 'Hardcoded Secrets',
-    severity: 'High',
-    confidence: 'High',
-    filePath: 'src/config/database.ts',
-    description: 'Database credentials hardcoded in source code',
-    codeSnippet: 'const PASSWORD = "admin123";'
-  },
-  {
-    id: '4',
-    ruleName: 'Insecure Random',
-    severity: 'Medium',
-    confidence: 'Medium',
-    filePath: 'src/utils/token.ts',
-    description: 'Using Math.random() for security-sensitive operations',
-    codeSnippet: 'const token = Math.random().toString(36);'
-  }
-];
+
+// const mockSastFindings: SastFinding[] = [
+//   {
+//     id: '1',
+//     ruleName: 'SQL Injection',
+//     severity: 'Critical',
+//     confidence: 'High',
+//     filePath: 'src/api/users.ts',
+//     description: 'SQL injection vulnerability detected in user query',
+//     codeSnippet: 'const query = `SELECT * FROM users WHERE id = ${userId}`;'
+//   },
+//   {
+//     id: '2',
+//     ruleName: 'XSS Vulnerability',
+//     severity: 'High',
+//     confidence: 'Medium',
+//     filePath: 'src/components/UserProfile.tsx',
+//     description: 'Potential XSS vulnerability in user input rendering',
+//     codeSnippet: 'dangerouslySetInnerHTML={{ __html: userContent }}'
+//   },
+//   {
+//     id: '3',
+//     ruleName: 'Hardcoded Secrets',
+//     severity: 'High',
+//     confidence: 'High',
+//     filePath: 'src/config/database.ts',
+//     description: 'Database credentials hardcoded in source code',
+//     codeSnippet: 'const PASSWORD = "admin123";'
+//   },
+//   {
+//     id: '4',
+//     ruleName: 'Insecure Random',
+//     severity: 'Medium',
+//     confidence: 'Medium',
+//     filePath: 'src/utils/token.ts',
+//     description: 'Using Math.random() for security-sensitive operations',
+//     codeSnippet: 'const token = Math.random().toString(36);'
+//   }
+// ];
 
 interface SastFindingsTableProps {
   onRemediate: (finding: SastFinding) => void;
@@ -107,10 +119,72 @@ export function SastFindingsTable({ onRemediate, onViewDetail }: SastFindingsTab
   const [severityFilter, setSeverityFilter] = useState<string>('all');
   const [ignoredFindings, setIgnoredFindings] = useState<Set<string>>(new Set());
 
-  const filteredFindings = mockSastFindings.filter(finding => {
-    if (severityFilter === 'all') return true;
-    return finding.severity === severityFilter;
-  }).filter(finding => !ignoredFindings.has(finding.id));
+  const { activeHub } = useHub();
+  const { toast } = useToast(); 
+  const baseUrl = window.REACT_APP_CONFIG.API_BASE_URL || "";
+  const getSAST = window.REACT_APP_CONFIG.API_ENDPOINTS.GET_SAST || "";
+  const { projectId, organization, repository, branch } = useParams();
+  //const [SASTresults, setSASTResults] = useState([]);
+
+  const [SASTresults, setSASTResults] = useState<SastFinding[]>([]);
+
+  console.log("SAST - Params:", { projectId, organization, repository, branch });
+  
+    const getSASTList = async () => {    
+  
+      try {
+        const res = await fetchWithAuth(`${baseUrl}${getSAST}?projectId=${projectId}&hubId=${activeHub?.id}&repository=${repository}&branch=${branch}`);
+        
+        const data = await res.json();
+  
+        console.log("SAST List:", data);
+
+        //setSASTResults(data?.data?.results[0]?.data || []);
+  
+        const topLayer = data?.data?.results?.[0] || {};
+        const scanId = data?.data?.scanId || '';
+        const platform = data?.data?.platform || 'github';
+        const rawFindings = topLayer?.data || [];
+
+        // Transform findings to match SastFinding interface
+        const findings: SastFinding[] = rawFindings.map(
+          (item: any, index: number): SastFinding => ({
+            id: `${scanId}-${index}`, // generate unique id if not in API
+            scanId,
+            organization,
+            platform,
+            repository,
+            branch,
+            rule_name: item.rule_name || '',
+            severity: item.severity,
+            confidence: item.confidence,
+            rule_message: item.rule_message || '',
+            metadata: {
+              file_path: item.metadata?.file_path || '',
+              line: item.metadata?.line || 0,
+            },
+          })
+        );
+
+        setSASTResults(findings);
+        
+      
+      } catch (err) {     
+        toast({
+          title: "Failed to load Repo List"        
+        });
+      }
+      
+    }
+  
+    useEffect(() => {
+      getSASTList();
+    }, []);
+
+  // const filteredFindings = mockSastFindings.filter(finding => {
+  //   if (severityFilter === 'all') return true;
+  //   return finding.severity === severityFilter;
+  // }).filter(finding => !ignoredFindings.has(finding.id));
 
   const handleIgnore = (findingId: string) => {
     setIgnoredFindings(prev => new Set([...prev, findingId]));
@@ -119,10 +193,10 @@ export function SastFindingsTable({ onRemediate, onViewDetail }: SastFindingsTab
   return (
     <div className="space-y-4">
       {/* Filter Controls */}
-      <div className="flex items-center justify-between">
+      {/* <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Shield className="h-4 w-4 text-primary" />
-          <span className="font-medium">SAST Findings ({filteredFindings.length})</span>
+          <span className="font-medium">SAST Findings ({SASTresults.length})</span>
         </div>
         
         <Select value={severityFilter} onValueChange={setSeverityFilter}>
@@ -137,7 +211,7 @@ export function SastFindingsTable({ onRemediate, onViewDetail }: SastFindingsTab
             <SelectItem value="Low">Low</SelectItem>
           </SelectContent>
         </Select>
-      </div>
+      </div> */}
 
       {/* Findings Table */}
       <Card>
@@ -153,9 +227,9 @@ export function SastFindingsTable({ onRemediate, onViewDetail }: SastFindingsTab
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredFindings.map((finding) => (
+              {SASTresults.map((finding) => (
                 <TableRow key={finding.id}>
-                  <TableCell className="font-medium">{finding.ruleName}</TableCell>
+                  <TableCell className="font-medium">{finding.rule_name}</TableCell>
                   <TableCell>
                     <Badge className={getSeverityColor(finding.severity)}>
                       {finding.severity}
@@ -165,7 +239,7 @@ export function SastFindingsTable({ onRemediate, onViewDetail }: SastFindingsTab
                     <Badge variant="outline">{finding.confidence}</Badge>
                   </TableCell>
                   <TableCell className="font-mono text-sm text-muted-foreground">
-                    {finding.filePath}
+                    {finding.metadata.file_path}:{finding.metadata.line}
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-1">
@@ -186,19 +260,19 @@ export function SastFindingsTable({ onRemediate, onViewDetail }: SastFindingsTab
                         <Eye className="h-3 w-3 mr-1" />
                         View
                       </Button>
-                      <Button
+                      {/* <Button
                         variant="outline"
                         size="sm"
                         onClick={() => handleIgnore(finding.id)}
                       >
                         <X className="h-3 w-3 mr-1" />
                         Ignore
-                      </Button>
+                      </Button> */}
                     </div>
                   </TableCell>
                 </TableRow>
               ))}
-              {filteredFindings.length === 0 && (
+              {SASTresults.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
                     No SAST findings found

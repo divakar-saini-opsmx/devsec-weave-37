@@ -118,10 +118,10 @@ export default function ScanStatusPage() {
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink 
-              onClick={() => navigate('/repositories')}
+              onClick={() => navigate('/projects')}
               className="cursor-pointer"
             >
-              Repositories
+              Projects
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
@@ -241,13 +241,13 @@ export default function ScanStatusPage() {
                 {scanProgress.status === 'completed' && (
                   <>
                     <Button 
-                      onClick={() => navigate(`/repositories/${repoId}?tab=findings`)} 
+                      onClick={() => navigate(`/projects/${repoId}?tab=findings`)} 
                       size="sm"
                     >
                       <Eye className="h-3 w-3 mr-2" />
                       View Detailed Findings
                     </Button>
-                    <Button onClick={() => navigate('/repositories')} variant="outline" size="sm">
+                    <Button onClick={() => navigate('/projects')} variant="outline" size="sm">
                       <ArrowLeft className="h-3 w-3 mr-2" />
                       Back to Repositories
                     </Button>

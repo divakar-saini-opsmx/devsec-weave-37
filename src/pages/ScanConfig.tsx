@@ -6,6 +6,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { Shield, Settings, ChevronRight, CheckCircle2, Search, Lock, Container, FileText } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useHub } from '@/contexts/HubContext';
 
 const ScanConfig = () => {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ const ScanConfig = () => {
     license: true
   });
   const [isLoading, setIsLoading] = useState(false);
+  const { setOnboarding } = useHub();
 
   const defaultScans = [
     { name: 'Secret Detection', icon: Lock, enabled: true },
@@ -53,6 +55,7 @@ const ScanConfig = () => {
         description: `${scanConfig.scans.length} scan types configured successfully.`
       });
       
+      setOnboarding(false); 
       navigate('/dashboard');
     }, 1000);
   };

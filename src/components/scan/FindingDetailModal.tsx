@@ -11,12 +11,14 @@ interface Finding {
   packageName?: string;
   vulnerability?: string;
   cveId?: string;
-  severity: 'Critical' | 'High' | 'Medium' | 'Low';
-  confidence?: 'High' | 'Medium' | 'Low';
+ // severity: 'Critical' | 'High' | 'Medium' | 'Low';
+ // confidence?: 'High' | 'Medium' | 'Low';
+  severity: 'critical' | 'high' | 'medium' | 'low';
+  confidence: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
   filePath?: string;
   currentVersion?: string;
   upgradeToVersion?: string;
-  description: string;
+  //description: string;
   codeSnippet?: string;
 }
 
@@ -77,7 +79,7 @@ export function FindingDetailModal({ finding, isOpen, onClose, onRemediate }: Fi
                     </Badge>
                   )}
                 </div>
-                <p className="text-muted-foreground">{finding.description}</p>
+                {/* <p className="text-muted-foreground">{finding.description}</p> */}
               </div>
               <Button onClick={() => onRemediate(finding)}>
                 Start Remediation

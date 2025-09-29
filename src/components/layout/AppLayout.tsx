@@ -2,11 +2,11 @@ import { Outlet } from 'react-router-dom';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/layout/AppSidebar';
 import { AppHeader } from '@/components/layout/AppHeader';
-import { HubProvider } from '@/contexts/HubContext';
+//import { HubProvider } from '@/contexts/HubContext';
 
 const AppLayout = () => {
   return (
-    <HubProvider>
+    // <HubProvider>
       <SidebarProvider>
         <div className="min-h-screen flex w-full bg-background">
           <AppSidebar />
@@ -18,7 +18,7 @@ const AppLayout = () => {
           </div>
         </div>
       </SidebarProvider>
-    </HubProvider>
+    // </HubProvider>
   );
 };
 
