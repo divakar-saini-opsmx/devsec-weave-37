@@ -17,6 +17,7 @@ import {
 import { fetchWithAuth } from "@/lib/fetchWithAuth";
 import { useToast } from '@/hooks/use-toast';
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { useParams } from "react-router-dom";
 
 interface Finding {
   id:string;  
@@ -90,6 +91,7 @@ export function RemediationChat({ finding, isOpen, onClose }: RemediationChatPro
   const [isStreaming, setIsStreaming] = useState(false);
   const [fixMessage, setFixMessage] = useState("");
   const { toast } = useToast(); 
+  const { projectId, organization, repository, branch } = useParams();
 
   console.log("Remediate SAST Finding:", finding);  
 
@@ -150,7 +152,7 @@ const simulateStreamingExecution = async (content: string, messageId: string) =>
             "file_path": finding.metadata.file_path,
             "line_no": finding.metadata.line
           }; 
-          const res = await fetchWithAuth(`${baseUrl}${SASTRemediationUrl}?action=${type}&projectId=abcd`, {        
+          const res = await fetchWithAuth(`${baseUrl}${SASTRemediationUrl}?action=${type}&projectId=${projectId}`, {        
             method: "POST",           
             body: JSON.stringify(postJson)           
           });    
@@ -273,7 +275,7 @@ const simulateStreamingExecution = async (content: string, messageId: string) =>
         "file_path": finding.metadata.file_path,
         "line_no": finding.metadata.line
       }; 
-      const res = await fetchWithAuth(`${baseUrl}${SASTRemediationUrl}?action=reject`, {        
+      const res = await fetchWithAuth(`${baseUrl}${SASTRemediationUrl}?action=reject&projectId=${projectId}`, {        
         method: "POST",        
         body: JSON.stringify(postJson),            
       }); 
