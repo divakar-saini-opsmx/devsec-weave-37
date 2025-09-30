@@ -17,6 +17,8 @@ import {
 import { fetchWithAuth } from "@/lib/fetchWithAuth";
 import { useToast } from '@/hooks/use-toast';
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { useParams } from "react-router-dom";
+import { v4 as uuidv4 } from 'uuid';
 
 interface Finding {
   id:string;  
@@ -25,15 +27,10 @@ interface Finding {
   platform : string;
   repository : string;
   branch : string;
-  rule_name: string;
+  component: string[];
   severity: 'critical' | 'high' | 'medium' | 'low';
   confidence: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
-  rule_message : string;
-  metadata:{
-    file_path: string;
-    line: number;
-  }
-  
+  vulnerability : string;   
 }
 
 export interface ExecutionMessageValue {
@@ -49,6 +46,7 @@ export interface CSPMExecutionResponse {
 }
 
 
+
 interface ChatMessage {
   id: string;
   type: 'system' | 'user';
@@ -56,6 +54,7 @@ interface ChatMessage {
   timestamp: Date;
   isStreaming?: boolean;
   customType?: 'diff' | 'normal';
+  sessionId: string;
 }
 
 interface RemediationChatSCAProps {
@@ -81,17 +80,22 @@ const getSeverityColor = (severity: string) => {
 
 export function RemediationChatSCA({ finding, isOpen, onClose }: RemediationChatSCAProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [inputValue, setInputValue] = useState('');
+  //const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const baseUrl = window.REACT_APP_CONFIG.API_BASE_URL || "";
-  const SASTRemediationUrl = window.REACT_APP_CONFIG.API_ENDPOINTS.SAST_REMEDIATION || "";
+  const SCARemediationUrl = window.REACT_APP_CONFIG.API_ENDPOINTS.SCA_REMEDIATION || "";
   const [executeMessages, setExecuteMessages] = useState<ChatMessage[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
   const [fixMessage, setFixMessage] = useState("");
   const { toast } = useToast(); 
+  const { projectId, organization, repository, branch } = useParams();
+  const [sessionIdFromAPI, setSessionIdFromAPI] = useState('');
+  const [userInput, setUserInput] = useState('');
+  const [sessionId, setSessionId] = useState(uuidv4());
 
   console.log("Remediate SCA Finding:", finding);  
+  //http://localhost:8080/api/v1/remediations/cve?mode=generate&projectId=abcd
 
 const simulateStreamingExecution = async (content: string, messageId: string) => {
   // setIsStreaming(true);
@@ -127,32 +131,304 @@ const simulateStreamingExecution = async (content: string, messageId: string) =>
  };
 
  
-  const handleGenerateCodeFix = async (type) => {
+  const handleGenerateSCAFix = async (type) => {
+
+    const mode = 'generate';
 
     if(type === 'generate'){
       setExecuteMessages([]);
     }
 
-    if (!finding) return;
-    //setIsLoading(true);
-    //setCurrentPhase('execution');
-    console.log("Fix Type -handleGenerateCodeFix -", type);
-
     try {
+      
+      const postJson = {
+        //"session_id":"",
+        "scan_result_id" : finding.scanId,
+        "platform": finding.platform,
+        "organization": finding.organization,
+        "repository": finding.repository,
+        "branch": finding.branch,
+        "package": finding.component[0],
+        "cve_id": finding.vulnerability,
+        "message_type": "start_generate"
+      };   
+        
+
+      console.log("mode", `${mode}`);
+      const res = await fetchWithAuth(`${baseUrl}${SCARemediationUrl}?mode=${mode}&projectId=${projectId}`, { 
+        method: "POST",      
+        body: JSON.stringify(postJson),            
+      });    
+      
+      if (!res.body) {
+        throw new Error("ReadableStream not supported or empty response.");
+      }
+  
+      const reader = res.body?.getReader();
+      const decoder = new TextDecoder("utf-8");
+  
+      let partial = "";
+  
+      while (true) {
+        const { value, done } = await reader.read();
+  
+        if (done) break;
+  
+        const chunk = decoder.decode(value, { stream: true });
+        partial += chunk;  
+        
+        // Split stream by newlines or `data:` events (depends on backend format)
+        //const messages = partial.split("\n");
+
+
+        let lines = partial.split("\n");
+
+        // If the last line is incomplete, keep it in `partial` for next chunk
+        partial = lines.pop() || ""; 
+  
+        for (let msg of lines) {              
+          msg = msg.trim();
+          if (!msg) continue;
+
+          if (msg.startsWith("data:")){ 
+            const jsonPart = msg.replace("data:", "").trim(); 
+            let parsed;
+            try {
+              parsed = JSON.parse(jsonPart);
+            } catch (e) {
+              console.error("Failed to parse message:", msg);
+              continue;
+            }              
+            
+            const aiRespId = `system-${Date.now()}`
+            
+            const aiResponse: ChatMessage = {
+              id: aiRespId,
+              type: 'system',
+              content: '',
+              timestamp: new Date(),
+              isStreaming: true,
+              customType: parsed.type === 'diff' ? 'diff' : 'normal',
+              sessionId: ""
+            };      
+
+           
+            let latestFixMessage = "";
+            switch(parsed.type) {
+              case 'content':                    
+                latestFixMessage = `${parsed.content}\n\n`
+                break;
+              // case 'system':                
+              //   //setFixMessage((prev) => prev +`${parsed.subtype} + "\n\n"+ ${parsed.data}` );
+              //   latestFixMessage = `${parsed.subtype}\n\n${parsed.data}`;
+              //   break;
+              case 'debug':                    
+                latestFixMessage = `${parsed.data}\n\n`;
+                break;
+              case 'error':                   
+                latestFixMessage = `${parsed.error}\n\n`;
+                break;
+              case 'diff':                   
+                 latestFixMessage = `${parsed.content}\n\n`;
+                 break;
+              case 'result':     
+                 setSessionIdFromAPI(parsed.session_id); // Capture session_id from API response
+                 break;
+              case 'done':                   
+                latestFixMessage = `End of message stream\n\n`;
+                break;                    
+              default:                    
+                console.warn("Unknown message type:", parsed.type);
+            }
+           
+            if(latestFixMessage != ""){
+              setExecuteMessages(prev => [...prev, aiResponse]);
+              await simulateStreamingExecution(latestFixMessage, aiRespId);   
+            }                           
+              
+          }
+          
+        }
+      }
+      
+      //setIsLoading(true);         
+  }
+  catch (e) {
+    //toast.error("Failed to execute.");
+  } finally {
+    //setIsLoading(false);
+  }
+
+    
+  }
+
+  useEffect(() => {
+    if(finding){
+      handleGenerateSCAFix('generate');
+    }   
+  },[finding]);
+
+  useEffect(() => {
+    if (scrollAreaRef.current) {
+      scrollAreaRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [executeMessages]);
+  
+  const handleFollowUpSCAFix = async () => {
+    if (!userInput.trim()) return;
+    
+    const userMessage: ChatMessage = {
+      id: uuidv4(),
+      type: 'user',
+      content: userInput,
+      timestamp: new Date(),
+      sessionId 
+    };
+    
+   // const mode = sessionIdFromAPI ? 'apply' : 'generate';
+    const mode = 'generate';
+    setExecuteMessages(prev => [...prev, userMessage]); 
+    setUserInput('');   
+
+    try {         
           const postJson = {
+            "session_id":sessionIdFromAPI,
             "scan_result_id" : finding.scanId,
             "platform": finding.platform,
             "organization": finding.organization,
             "repository": finding.repository,
             "branch": finding.branch,
-            "rule_message": finding.rule_message,
-            "rule": finding.rule_name,
-            "file_path": finding.metadata.file_path,
-            "line_no": finding.metadata.line
-          }; 
-          const res = await fetchWithAuth(`${baseUrl}${SASTRemediationUrl}?action=${type}`, {        
+            "package": finding.component[0],
+            "cve_id": finding.vulnerability,
+            "message_type": "followup",
+            "user_message": userInput.trim()
+          };  
+
+          console.log("mode", `${mode}`);
+          const res = await fetchWithAuth(`${baseUrl}${SCARemediationUrl}?mode=${mode}&projectId=${projectId}`, { 
             method: "POST",           
-            body: JSON.stringify(postJson)           
+            body: JSON.stringify(postJson),            
+          });    
+          
+          if (!res.body) {
+            throw new Error("ReadableStream not supported or empty response.");
+          }
+      
+          const reader = res.body?.getReader();
+          const decoder = new TextDecoder("utf-8");
+      
+          let partial = "";
+      
+          while (true) {
+            const { value, done } = await reader.read();
+      
+            if (done) break;
+      
+            const chunk = decoder.decode(value, { stream: true });
+            partial += chunk;  
+            
+            // Split stream by newlines or `data:` events (depends on backend format)
+            //const messages = partial.split("\n");
+
+
+            let lines = partial.split("\n");
+
+            // If the last line is incomplete, keep it in `partial` for next chunk
+            partial = lines.pop() || ""; 
+
+            for (let msg of lines) {              
+              msg = msg.trim();
+              if (!msg) continue;
+
+              if (msg.startsWith("data:")){ 
+                const jsonPart = msg.replace("data:", "").trim(); 
+                let parsed;
+                try {
+                  parsed = JSON.parse(jsonPart);
+                } catch (e) {
+                  console.error("Failed to parse message:", msg);
+                  continue;
+                }              
+                
+                const aiRespId = `system-${Date.now()}`
+                
+                const aiResponse: ChatMessage = {
+                  id: aiRespId,
+                  type: 'system',
+                  content: '',
+                  timestamp: new Date(),
+                  isStreaming: true,
+                  customType: parsed.type === 'diff' ? 'diff' : 'normal',
+                  sessionId: sessionIdFromAPI
+                };      
+
+                
+                let latestFixMessage = "";
+                switch(parsed.type) {
+                  case 'content':                    
+                    latestFixMessage = `${parsed.content}\n\n`
+                    break;
+                  // case 'system':                
+                  //   //setFixMessage((prev) => prev +`${parsed.subtype} + "\n\n"+ ${parsed.data}` );
+                  //   latestFixMessage = `${parsed.subtype}\n\n${parsed.data}`;
+                  //   break;
+                  case 'debug':                    
+                    latestFixMessage = `${parsed.data}\n\n`;
+                    break;
+                  case 'error':                   
+                    latestFixMessage = `${parsed.error}\n\n`;
+                    break;
+                  case 'diff':                   
+                     latestFixMessage = `${parsed.content}\n\n`;
+                     break;
+                  case 'result':     
+                     setSessionIdFromAPI(parsed.session_id); // Capture session_id from API response
+                     break;
+                  case 'done':                   
+                    latestFixMessage = `End of message stream\n\n`;
+                    break;                    
+                  default:                    
+                    console.warn("Unknown message type:", parsed.type);
+                }
+               
+                if(latestFixMessage != ""){
+                  setExecuteMessages(prev => [...prev, aiResponse]);
+                  await simulateStreamingExecution(latestFixMessage, aiRespId);   
+                }                           
+              }
+            }          
+          }          
+          //setIsLoading(true);         
+      }
+      catch (e) {
+        //toast.error("Failed to execute.");
+      } finally {
+       // setIsLoading(false);
+      }
+
+  };
+
+  const handleApprove = async () => { 
+    console.log("approved");     
+    const mode = 'apply' ; 
+
+    try {
+      const postJson = {
+        "session_id":sessionIdFromAPI,
+        "scan_result_id" : finding.scanId,
+        "platform": finding.platform,
+        "organization": finding.organization,
+        "repository": finding.repository,
+        "branch": finding.branch,
+        "package": finding.component[0],
+        "cve_id": finding.vulnerability,
+        "message_type": "start_apply"
+      };       
+
+          console.log("mode", `${mode}`);
+          const res = await fetchWithAuth(`${baseUrl}${SCARemediationUrl}?mode=${mode}&projectId=${projectId}`, { 
+            method: "POST",            
+            body: JSON.stringify(postJson),            
           });    
           
           if (!res.body) {
@@ -181,15 +457,20 @@ const simulateStreamingExecution = async (content: string, messageId: string) =>
             // If the last line is incomplete, keep it in `partial` for next chunk
             partial = lines.pop() || ""; 
       
-            for (let msg of lines) {
+            for (let msg of lines) {              
               msg = msg.trim();
               if (!msg) continue;
-      
-              if (msg.startsWith("data:")) {
-                const jsonPart = msg.replace("data:", "").trim(); 
-                const parsed = JSON.parse(jsonPart);  
 
-                //const aiRespContent = formatCSPMExecuteAsMessage(parsed);
+              if (msg.startsWith("data:")){ 
+                const jsonPart = msg.replace("data:", "").trim(); 
+                let parsed;
+                try {
+                  parsed = JSON.parse(jsonPart);
+                } catch (e) {
+                  console.error("Failed to parse message:", msg);
+                  continue;
+                }              
+                
                 const aiRespId = `system-${Date.now()}`
                 
                 const aiResponse: ChatMessage = {
@@ -198,11 +479,12 @@ const simulateStreamingExecution = async (content: string, messageId: string) =>
                   content: '',
                   timestamp: new Date(),
                   isStreaming: true,
-                  customType: parsed.type === 'diff' ? 'diff' : 'normal'
-                };                  
-                setExecuteMessages(prev => [...prev, aiResponse]);
-                setIsStreaming(true);
-                let latestFixMessage = fixMessage;
+                  customType: parsed.type === 'diff' ? 'diff' : 'normal',
+                  sessionId: ""
+                };      
+
+               // setExecuteMessages(prev => [...prev, aiResponse]);
+                let latestFixMessage = "";
                 switch(parsed.type) {
                   case 'content':                    
                     latestFixMessage = `${parsed.content}\n\n`
@@ -220,77 +502,38 @@ const simulateStreamingExecution = async (content: string, messageId: string) =>
                   case 'diff':                   
                      latestFixMessage = `${parsed.content}\n\n`;
                      break;
+                  case 'result':     
+                     setSessionIdFromAPI(parsed.session_id); // Capture session_id from API response
+                     break;
                   case 'done':                   
-                    latestFixMessage = `The Code Agent has finished processing the task\n\n`;
-                    setIsStreaming(false);
-                    break;
+                    latestFixMessage = `End of message stream\n\n`;
+                    break;                    
                   default:                    
                     console.warn("Unknown message type:", parsed.type);
                 }
                
-               await simulateStreamingExecution(latestFixMessage, aiRespId);               
+                if(latestFixMessage != ""){
+                  setExecuteMessages(prev => [...prev, aiResponse]);
+                  await simulateStreamingExecution(latestFixMessage, aiRespId);   
+                }                
               }
+              
             }
           }
-         
+          
+          //setIsLoading(true);         
       }
       catch (e) {
-       // toast.error("Failed to execute.");
+        //toast.error("Failed to execute.");
       } finally {
-        //setIsLoading(false);
+       //setIsLoading(false);
       }
-    
+
+  
   }
 
-  useEffect(() => {
-    if(finding){
-      handleGenerateCodeFix('generate');
-    }   
-  },[finding]);
+ 
 
-  const handleApprove = () => {
-    console.log("Approved diff:");    
-    toast({
-      title: "Continuing to approve the fix..."        
-    });
-    handleGenerateCodeFix('approve');
-  };
-
-  const handleReject = async () => {   
-    console.log("Rejected diff:");
-    toast({
-      title: "Continuing to reject the fix..."        
-    });   
-    try{
-      const postJson = {
-        "scan_result_id" : finding.scanId,
-        "platform": finding.platform,
-        "organization": finding.organization,
-        "repository": finding.repository,
-        "branch": finding.branch,
-        "rule_message": finding.rule_message,
-        "rule": finding.rule_name,
-        "file_path": finding.metadata.file_path,
-        "line_no": finding.metadata.line
-      }; 
-      const res = await fetchWithAuth(`${baseUrl}${SASTRemediationUrl}?action=reject`, {        
-        method: "POST",        
-        body: JSON.stringify(postJson),            
-      }); 
-      if (!res.ok) throw new Error("Something went wrong");
-  
-      const result = await res.json();
-      console.log("Response from server:", result);  
-    }catch (error) {
-      console.error("Error rejecting fix:", error);
-      toast({
-        title: "Failed to reject the fix..."        
-      });
-    }finally {
-      //setIsLoading(false);
-    }
-    
-  };
   
   const handleCopyMessage = (content: string) => {
     navigator.clipboard.writeText(content);
@@ -302,7 +545,7 @@ const simulateStreamingExecution = async (content: string, messageId: string) =>
 
 
   return (
-    <div className="fixed inset-y-0 right-0 w-96 bg-background border-l border-border shadow-lg z-50">
+    <div className="fixed inset-y-0 right-0 w-[40%] bg-background border-l border-border shadow-lg z-50">
       <Card className="h-full rounded-none border-0">
         <CardHeader className="border-b">
           <div className="flex items-center justify-between">
@@ -311,14 +554,14 @@ const simulateStreamingExecution = async (content: string, messageId: string) =>
                 <Bot className="h-4 w-4 text-primary" />
                 AI Remediation Assistant
               </CardTitle>
-              <div className="flex items-center gap-2 mt-2">
+              {/* <div className="flex items-center gap-2 mt-2">
                 <Badge className={getSeverityColor(finding.severity)}>
                   {finding.severity}
                 </Badge>
                 <span className="text-xs text-muted-foreground truncate">
                   {'ruleName' in finding ? finding.rule_name : finding.metadata.file_path }
                 </span>
-              </div>
+              </div> */}
             </div>
             <Button variant="ghost" size="sm" onClick={onClose}>
               <X className="h-4 w-4" />
@@ -328,7 +571,7 @@ const simulateStreamingExecution = async (content: string, messageId: string) =>
 
         <CardContent className="flex flex-col h-[calc(100vh-120px)] p-0">
           {/* Messages */}
-          <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
+          <ScrollArea className="flex-1 p-4" >
             <div className="space-y-4">
               {executeMessages.map((message) => (
                 <div
@@ -364,12 +607,12 @@ const simulateStreamingExecution = async (content: string, messageId: string) =>
                         >
                           Approve
                         </button>
-                        <button
+                        {/* <button
                           onClick={handleReject}
                           className="px-4 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700"
                         >
                           Reject
-                        </button>
+                        </button> */}
                       </div>                      
                     )}
                     
@@ -392,6 +635,7 @@ const simulateStreamingExecution = async (content: string, messageId: string) =>
                   )}
                 </div>
               ))}
+              <div ref={scrollAreaRef} />
               {isTyping && executeMessages.length > 0 && (
                 <div className="flex gap-3">
                   <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
@@ -405,28 +649,28 @@ const simulateStreamingExecution = async (content: string, messageId: string) =>
 
           {/* Input */}
           <div className="border-t p-4">
-            {/* <div className="flex gap-2">
+            <div className="flex gap-2">
               <Input
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
+                value={userInput}
+                onChange={(e) => setUserInput(e.target.value)}
                 placeholder="Ask about remediation..."
                 className="flex-1"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
-                    handleGenerateCodeFix(('generate'));
+                    handleFollowUpSCAFix();
                   }
                 }}
                 disabled={isTyping}
               />
               <Button
-                onClick={handleGenerateCodeFix}
-                disabled={!inputValue.trim() || isTyping}
+                onClick={handleFollowUpSCAFix}
+                disabled={!userInput.trim() || isTyping}
                 size="sm"
               >
                 <Send className="h-4 w-4" />
               </Button>
-            </div> */}
+            </div>
             
             {/* Quick Actions */}
             {/* <div className="flex gap-2 mt-2">
