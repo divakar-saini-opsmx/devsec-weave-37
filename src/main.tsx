@@ -36,7 +36,8 @@ const loadConfig = async () => {
         GET_INTEGRATIONS: "/api/v1/integrations",
         CREATE_INTEGRATION: "/api/v1/integrations/github/create",
         DELETE_INTEGRATION: "/api/v1/integrations/delete/",
-        GET_REPO_USER_ORG: "/api/v1/integrations/users/"
+        GET_REPO_USER_ORG: "/api/v1/integrations/users/",
+        SCA_REMEDIATION: "/api/v1/remediations/cve"
         // Add other endpoints as needed   
       }        
     };

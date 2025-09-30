@@ -146,15 +146,17 @@ export function ScaFindingsTable({ onRemediate, onViewDetail }: ScaFindingsTable
           const data = await res.json();
           
           console.log("setSCAResults List:", data);    
-          const rawFindings = data?.data?.vulnerabilityList || [];         
+          const rawFindings = data?.data?.vulnerabilityList || [];  
+          const scanId = data?.data?.scanId || ''; 
+          const platform = data?.data?.platform || 'github';      
   
           // Transform findings to match SCA interface
           const findings: ScaFinding[] = rawFindings.map(
             (item: any, index: number): ScaFinding => ({
               id: `${index}`, // generate unique id if not in API
-              //scanId,
+              scanId,
               organization,
-              //platform,
+              platform,
               repository,
               branch,
               vulnerability: item.vulnerability || '',
@@ -178,9 +180,7 @@ export function ScaFindingsTable({ onRemediate, onViewDetail }: ScaFindingsTable
               // Map severity to match defined types
               //severity: (['Critical', 'High', 'Medium', 'Low'].includes(item.severity) ? item.severity : 'Low') as 'Critical' | 'High' | 'Medium' | 'Low',
               priority: item.priority || 'N/A',
-              installedVersion: item.installed_version || [],
-              scanId: '',
-              platform: ''
+              installedVersion: item.installed_version || []              
             })
           );
   

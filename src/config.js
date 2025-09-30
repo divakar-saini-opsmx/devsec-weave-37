@@ -16,7 +16,7 @@ export const config = {
   "GET_INTEGRATIONS": "/api/v1/integrations",
   "CREATE_INTEGRATION": "/api/v1/integrations/github/create",
   "DELETE_INTEGRATION": "/api/v1/integrations/delete/",
-  "GET_REPO_USER_ORG": "/api/v1/integrations/github/details"
-
+  "GET_REPO_USER_ORG": "/api/v1/integrations/github/details",
+  "SCA_REMEDIATION" : "/api/v1/remediations/cve"
 }
 }

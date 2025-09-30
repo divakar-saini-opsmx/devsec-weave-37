@@ -92,6 +92,7 @@ export function RemediationChat({ finding, isOpen, onClose }: RemediationChatPro
   const [fixMessage, setFixMessage] = useState("");
   const { toast } = useToast(); 
   const { projectId, organization, repository, branch } = useParams();
+  
 
   console.log("Remediate SAST Finding:", finding);  
 
@@ -250,6 +251,14 @@ const simulateStreamingExecution = async (content: string, messageId: string) =>
     }   
   },[finding]);
 
+
+
+  useEffect(() => {
+    if (scrollAreaRef.current) {
+      scrollAreaRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [executeMessages]);
+
   const handleApprove = () => {
     console.log("Approved diff:");    
     toast({
@@ -304,7 +313,7 @@ const simulateStreamingExecution = async (content: string, messageId: string) =>
 
 
   return (
-    <div className="fixed inset-y-0 right-0 w-96 bg-background border-l border-border shadow-lg z-50">
+    <div className="fixed inset-y-0 right-0 w-[40%] bg-background border-l border-border shadow-lg z-50">
       <Card className="h-full rounded-none border-0">
         <CardHeader className="border-b">
           <div className="flex items-center justify-between">
@@ -330,8 +339,8 @@ const simulateStreamingExecution = async (content: string, messageId: string) =>
 
         <CardContent className="flex flex-col h-[calc(100vh-120px)] p-0">
           {/* Messages */}
-          <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
-            <div className="space-y-4">
+          <ScrollArea className="flex-1 p-4">
+            <div className="space-y-4"  >
               {executeMessages.map((message) => (
                 <div
                   key={message.id}
@@ -394,6 +403,7 @@ const simulateStreamingExecution = async (content: string, messageId: string) =>
                   )}
                 </div>
               ))}
+              <div ref={scrollAreaRef} />
               {isTyping && executeMessages.length > 0 && (
                 <div className="flex gap-3">
                   <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center flex-shrink-0">

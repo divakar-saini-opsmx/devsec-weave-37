@@ -20,7 +20,8 @@ declare global {
           GET_INTEGRATIONS: string;
           CREATE_INTEGRATION: string;
           DELETE_INTEGRATION: string;  
-          GET_REPO_USER_ORG: string;     
+          GET_REPO_USER_ORG: string; 
+          SCA_REMEDIATION : string;    
           // Add other endpoints as needed         
         }        
       [key: string]: any;

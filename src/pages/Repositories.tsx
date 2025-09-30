@@ -28,7 +28,7 @@ interface Repository {
   organization : string;
   name: string;
   branch: string;
-  status: 'Not Scanned' | 'In Progress' | 'Completed';
+  status: 'Failed' | 'Scanning' | 'Pending' |'Completed' ;
   issues: {
     critical: number;
     high: number;
