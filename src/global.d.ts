@@ -21,7 +21,9 @@ declare global {
           CREATE_INTEGRATION: string;
           DELETE_INTEGRATION: string;  
           GET_REPO_USER_ORG: string; 
-          SCA_REMEDIATION : string;    
+          SCA_REMEDIATION : string; 
+          DASHBOARD_OPTIMIZATION : string;
+          DASHBOARD_PRIORITIZATION : string;   
           // Add other endpoints as needed         
         }        
       [key: string]: any;

@@ -12,6 +12,39 @@ import {
   Clock,
   Users
 } from 'lucide-react';
+import { fetchWithAuth } from "@/lib/fetchWithAuth";
+import { useToast } from '@/hooks/use-toast';
+import { useHub } from "@/contexts/HubContext";
+import VulnerabilityOverview from './VulnerabilityOverview';
+
+interface Optimization {
+  allVulnerabilities : number;
+  uniqueVulnerabilities : number;
+  topPriority : number;
+}
+
+// One item inside vulnerabilityPrioritisationData
+export interface VulnerabilityPrioritisationItem {
+  name: string;      // e.g. "Priority 3"
+  severity: string;  // "low" | "medium" | "high" | "critical"
+  cvss: number;
+  epss: number;
+  prirorityInt: number; // (API typo preserved)
+}
+
+// Prioritization API
+export interface Prioritisation {
+  vulnerabilities: number;
+  priority: {
+    "Priority 1": number;
+    "Priority 1+": number;
+    "Priority 2": number;
+    "Priority 3": number;
+    "Priority 4": number;
+    Unprioritized: number;
+  };
+  vulnerabilityPrioritisationData: VulnerabilityPrioritisationItem[];
+}
 
 
 
@@ -21,10 +54,52 @@ const Dashboard = () => {
   const [isGitHubConnected, setIsGitHubConnected] = useState(false);
   const baseUrl = window.REACT_APP_CONFIG.API_BASE_URL || "/api";
   const hubAPI = window.REACT_APP_CONFIG.API_ENDPOINTS.GET_HUB || "/api/hublist";
+  const { activeHub } = useHub();
+  const { toast } = useToast(); 
+  const getOptimization = window.REACT_APP_CONFIG.API_ENDPOINTS.DASHBOARD_OPTIMIZATION || "";
+  const getPrioritization = window.REACT_APP_CONFIG.API_ENDPOINTS.DASHBOARD_PRIORITIZATION || "";
+  const [optimization, setOptimization] = useState<Optimization | null>(null);
+  const [prioritisation, setPrioritisation] = useState<Prioritisation | null>(null);
+  
+  const getOptimizationList = async () => {    
 
+    try {
+      const res = await fetchWithAuth(`${baseUrl}${getOptimization}?teamId=${activeHub?.id}&suppressedFlag=false&current=false`);
+      const data: Optimization = await res.json();
+      console.log("getOptimizationList List:", data);
+      setOptimization(data);
+      
+    
+    } catch (err) { 
+      
+      toast({
+        title: "Failed to load getOptimizationList List"        
+      });
+    }
+    
+  }
 
-  console.log("Dashboard Page - API Base URL:", baseUrl);
-  console.log("Dashboard Page - API GetHub:", hubAPI);
+  const getPrioritizationList = async () => {    
+
+    try {
+      const res = await fetchWithAuth(`${baseUrl}${getPrioritization}?teamId=${activeHub?.id}&suppressedFlag=false&current=false`);
+      const data: Prioritisation = await res.json();
+      console.log("getPrioritizationList List:", data);
+      setPrioritisation(data);    
+    
+    } catch (err) {     
+      toast({
+        title: "Failed to load getPrioritizationList List"        
+      });
+    }
+    
+  }
+
+  useEffect(() => {
+    getOptimizationList();
+    getPrioritizationList();
+  }, []);
+
   
 
   useEffect(() => {
@@ -164,6 +239,11 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-8">
+      <VulnerabilityOverview
+        optimization={optimization}
+        prioritisation={prioritisation}
+      />
+    
       {/* Welcome Header */}
       {/* <div className="space-y-2">
         <h1 className="text-3xl font-bold">
@@ -205,22 +285,22 @@ const Dashboard = () => {
        {/* Main Issues Overview */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Open Issues */}
-        <Card className="border-0 shadow-md bg-card">
+        {/* <Card className="border-0 shadow-md bg-card">
           <CardHeader className="pb-4">
             <CardTitle className="text-lg font-semibold">Open Issues</CardTitle>
           </CardHeader>
           <CardContent className="pt-0">
             <div className="flex flex-col items-center justify-center py-12">
-              <div className="text-6xl font-bold text-foreground mb-4">0</div>
+              <div className="text-6xl font-bold text-foreground mb-4">{optimization?.allVulnerabilities}</div>
               <div className="w-32 h-32 bg-muted/30 rounded-full flex items-center justify-center mb-4">
                 <div className="w-24 h-24 bg-muted/50 rounded-full"></div>
               </div>
             </div>
           </CardContent>
-        </Card>
+        </Card> */}
 
         {/* Pressing Issues */}
-        <Card className="border-0 shadow-md bg-card">
+        {/* <Card className="border-0 shadow-md bg-card">
           <CardHeader className="pb-4 flex flex-row items-center justify-between">
             <CardTitle className="text-lg font-semibold">Pressing Issues</CardTitle>
             <Button variant="ghost" size="sm" className="text-muted-foreground">
@@ -229,7 +309,7 @@ const Dashboard = () => {
           </CardHeader>
           <CardContent className="pt-0">
             <div className="flex flex-col items-center justify-center py-8">
-              <div className="text-6xl font-bold text-destructive mb-2">0</div>
+              <div className="text-6xl font-bold text-destructive mb-2">{optimization?.uniqueVulnerabilities}</div>
               <p className="text-sm text-muted-foreground mb-4">No urgent issues</p>
               <div className="flex items-center gap-2 text-secondary">
                 <CheckCircle className="h-5 w-5" />
@@ -237,7 +317,7 @@ const Dashboard = () => {
               </div>
             </div>
           </CardContent>
-        </Card>
+        </Card> */}
       </div>
 
       {/* COMMENTED OUT - ORIGINAL BROKEN CODE STRUCTURE */}
@@ -394,10 +474,10 @@ const Dashboard = () => {
       */}
 
       {/* Last Updated */}
-      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+      {/* <div className="flex items-center gap-2 text-sm text-muted-foreground">
         <Clock className="h-4 w-4" />
         <span>Last updated: {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}</span>
-      </div>
+      </div> */}
 
       
       {/* 

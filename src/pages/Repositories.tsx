@@ -13,7 +13,8 @@ import {
   Plus,
   AlertCircle,
   CheckCircle2,
-  Clock
+  Clock,
+  XCircle, Loader2 
 } from 'lucide-react';
 import { useHub } from "@/contexts/HubContext";
 import { fetchWithAuth } from "@/lib/fetchWithAuth";
@@ -66,25 +67,33 @@ interface Repository {
 //   }
 // ];
 
-const getStatusIcon = (status: Repository['status']) => {
+const getStatusIcon = (status: Repository["status"]) => {
   switch (status) {
-    case 'Completed':
-      return <CheckCircle2 className="h-4 w-4 text-success" />;
-    case 'Pending':
-      return <Clock className="h-4 w-4 text-warning" />;
-    case 'Scanning':
-      return <AlertCircle className="h-4 w-4 text-muted-foreground" />;
+    case "Completed":
+      return <CheckCircle2 className="h-4 w-4 text-white" />;
+    case "Failed":
+      return <XCircle className="h-4 w-4 text-white" />;
+    case "Pending":
+      return <Clock className="h-4 w-4 text-white" />;
+    case "Scanning":
+      return <Loader2 className="h-4 w-4 text-white animate-spin" />;
+    default:
+      return null;
   }
 };
 
-const getStatusBadgeVariant = (status: Repository['status']) => {
+const getStatusBadgeClass = (status: Repository["status"]) => {
   switch (status) {
-    case 'Completed':
-      return 'default';
-    case 'Pending':
-      return 'secondary';
-    case 'Scanning':
-      return 'outline';
+    case "Completed":
+      return "bg-emerald-600 text-white";
+    case "Failed":
+      return "bg-red-600 text-white";
+    case "Pending":
+      return "bg-amber-500 text-white";
+    case "Scanning":
+      return "bg-sky-600 text-white";
+    default:
+      return "bg-gray-500 text-white";
   }
 };
 
@@ -138,7 +147,7 @@ export default function Repositories() {
     try {
       const res = await fetchWithAuth(`${baseUrl}${getRepository}${activeHub?.id}`);
       const data = await res.json();
-      console.log("Repositoy List:", data);
+      console.log("Repositoy List:", data); 
       const pocessResp = transformApiResponse(data);
       console.log(pocessResp);
       setRepositories(prev => [...(prev ?? []), ...pocessResp]);
@@ -373,9 +382,10 @@ const transformApiResponse = (apiResponse) => {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        {getStatusIcon(repo.status)}
-                        <Badge variant={getStatusBadgeVariant(repo.status)}>
-                          {repo.status}
+                        {/* {getStatusIcon(repo.status)} */}                       
+                        <Badge className={`flex items-center gap-1 ${getStatusBadgeClass(repo.status)}`}>
+                          {getStatusIcon(repo.status)}
+                          <span>{repo.status}</span>
                         </Badge>
                       </div>
                     </TableCell>
