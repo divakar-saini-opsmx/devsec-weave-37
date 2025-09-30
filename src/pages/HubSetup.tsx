@@ -213,7 +213,7 @@ const HubSetup = () => {
 }
 
 const handleMessage = (event) => {
-  if (event.origin !== "https://oauth-bridge.remediation.opsmx.net") {    
+  if (event.origin !== "https://oauth-bridge.remediation.opsmx.org") {    
     console.warn("Blocked message from:", event.origin);
     return;
   }

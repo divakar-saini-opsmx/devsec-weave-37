@@ -37,7 +37,9 @@ const loadConfig = async () => {
         CREATE_INTEGRATION: "/api/v1/integrations/github/create",
         DELETE_INTEGRATION: "/api/v1/integrations/delete/",
         GET_REPO_USER_ORG: "/api/v1/integrations/users/",
-        SCA_REMEDIATION: "/api/v1/remediations/cve"
+        SCA_REMEDIATION: "/api/v1/remediations/cve",
+        DASHBOARD_OPTIMIZATION: "/api/v1/vuln/optimisation",
+        DASHBOARD_PRIORITIZATION: "/api/v1/vuln/prioritisation"
         // Add other endpoints as needed   
       }        
     };
