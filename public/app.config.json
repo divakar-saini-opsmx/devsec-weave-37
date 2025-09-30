@@ -1,5 +1,5 @@
 {
-    "API_BASE_URL": "http://localhost:8081",   
+    "API_BASE_URL": "https://ai-rem-dev-api.scanner.opsmx.org",   
     "API_ENDPOINTS": {
     "GOOGLE_LOGIN": "/auth/google/login",
     "GET_USER":"/api/v1/profile",

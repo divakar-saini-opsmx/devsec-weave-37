@@ -70,9 +70,9 @@ const getStatusIcon = (status: Repository['status']) => {
   switch (status) {
     case 'Completed':
       return <CheckCircle2 className="h-4 w-4 text-success" />;
-    case 'In Progress':
+    case 'Pending':
       return <Clock className="h-4 w-4 text-warning" />;
-    case 'Not Scanned':
+    case 'Scanning':
       return <AlertCircle className="h-4 w-4 text-muted-foreground" />;
   }
 };
@@ -81,9 +81,9 @@ const getStatusBadgeVariant = (status: Repository['status']) => {
   switch (status) {
     case 'Completed':
       return 'default';
-    case 'In Progress':
+    case 'Pending':
       return 'secondary';
-    case 'Not Scanned':
+    case 'Scanning':
       return 'outline';
   }
 };
