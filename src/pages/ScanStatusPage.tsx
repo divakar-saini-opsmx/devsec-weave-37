@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 
 interface ScanProgress {
-  status: 'started' | 'in-progress' | 'completed';
+  status: 'initiated' | 'in-progress' | 'registered';
   scanId: string;
   startedAt: string;
   progress: number;
@@ -41,7 +41,7 @@ export default function ScanStatusPage() {
   const { repoId } = useParams();
   const navigate = useNavigate();
   const [scanProgress, setScanProgress] = useState<ScanProgress>({
-    status: 'started',
+    status: 'initiated',
     scanId: `scan_${Date.now()}`,
     startedAt: 'Just now',
     progress: 0,
@@ -79,7 +79,7 @@ export default function ScanStatusPage() {
         clearInterval(progressInterval);
         setScanProgress(prev => ({
           ...prev,
-          status: 'completed',
+          status: 'registered',
           results: { critical: 2, high: 4, medium: 1, low: 3 }
         }));
       }
@@ -88,10 +88,10 @@ export default function ScanStatusPage() {
 
   const getStatusIcon = () => {
     switch (scanProgress.status) {
-      case 'completed':
+      case 'registered':
         return <CheckCircle2 className="h-6 w-6 text-success" />;
       case 'in-progress':
-      case 'started':
+      case 'initiated':
         return <Clock className="h-6 w-6 text-warning animate-pulse" />;
       default:
         return <AlertTriangle className="h-6 w-6 text-muted-foreground" />;
@@ -100,12 +100,12 @@ export default function ScanStatusPage() {
 
   const getStatusText = () => {
     switch (scanProgress.status) {
-      case 'started':
-        return 'Starting Scan';
+      case 'initiated':
+        return 'Scan initiated';
       case 'in-progress':
         return 'Scan In Progress';
-      case 'completed':
-        return 'Scan Completed';
+      case 'registered':
+        return 'Scan is registered';
       default:
         return 'Unknown Status';
     }
@@ -174,14 +174,39 @@ export default function ScanStatusPage() {
             </CardContent>
           </Card>
 
-          <Card>
+          {/* <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center justify-between">             
+              <div className="flex gap-2">
+                {scanProgress.status === 'registered' && (
+                  <>
+                    <Button 
+                      onClick={() => navigate(`/projects/${repoId}?tab=findings`)} 
+                      size="sm"
+                    >
+                      <Eye className="h-3 w-3 mr-2" />
+                      View Detailed Findings
+                    </Button>
+                    <Button onClick={() => navigate('/projects')} variant="outline" size="sm">
+                      <ArrowLeft className="h-3 w-3 mr-2" />
+                      Back to Repositories
+                    </Button>
+                  </>
+                )}
+              </div>
+            </CardTitle>
+          </CardHeader>
+          
+        </Card> */}
+
+          {/* <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-medium text-muted-foreground">Scan ID</CardTitle>
             </CardHeader>
             <CardContent className="pt-0">
               <div className="text-lg font-mono text-muted-foreground">{scanProgress.scanId}</div>
             </CardContent>
-          </Card>
+          </Card> */}
         </div>
 
         {/* Middle Section - Progress */}
@@ -194,7 +219,7 @@ export default function ScanStatusPage() {
           </CardHeader>
           <CardContent className="space-y-6 h-full">
             {/* Progress Bar */}
-            {(scanProgress.status === 'in-progress' || scanProgress.status === 'started') && (
+            {(scanProgress.status === 'in-progress' || scanProgress.status === 'initiated') && (
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
                   <span className="text-sm font-medium">Overall Progress</span>
@@ -238,15 +263,15 @@ export default function ScanStatusPage() {
             <CardTitle className="flex items-center justify-between">
               <span>Results Summary</span>
               <div className="flex gap-2">
-                {scanProgress.status === 'completed' && (
+                {scanProgress.status === 'registered' && (
                   <>
-                    <Button 
+                    {/* <Button 
                       onClick={() => navigate(`/projects/${repoId}?tab=findings`)} 
                       size="sm"
                     >
                       <Eye className="h-3 w-3 mr-2" />
                       View Detailed Findings
-                    </Button>
+                    </Button> */}
                     <Button onClick={() => navigate('/projects')} variant="outline" size="sm">
                       <ArrowLeft className="h-3 w-3 mr-2" />
                       Back to Repositories
@@ -256,7 +281,7 @@ export default function ScanStatusPage() {
               </div>
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          {/* <CardContent>
             {scanProgress.status === 'completed' ? (
               <div className="flex items-center gap-3 flex-wrap">
                 {scanProgress.results.critical > 0 && (
@@ -290,7 +315,7 @@ export default function ScanStatusPage() {
                 Results will appear here once the scan is complete...
               </div>
             )}
-          </CardContent>
+          </CardContent> */}
         </Card>
       </div>
     </div>

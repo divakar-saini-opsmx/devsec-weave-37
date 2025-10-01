@@ -272,17 +272,17 @@ export function AddRepositoryDialog({
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-            {/* Repository Name */}
+            {/* Project Name */}
             <FormField
               control={form.control}
               name="name"
-              rules={{ required: 'Repository name is required' }}
+              rules={{ required: 'Project name is required' }}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
                     <Input 
-                      placeholder="Enter repository name" 
+                      placeholder="Enter project name" 
                       {...field} 
                     />
                   </FormControl>

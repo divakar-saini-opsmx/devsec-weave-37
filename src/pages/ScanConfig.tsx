@@ -148,7 +148,7 @@ const ScanConfig = () => {
           </Card>
 
           {/* Custom Configuration */}
-          <Card className={`cursor-pointer transition-all border-2 ${
+          {/* <Card className={`cursor-pointer transition-all border-2 ${
             selectedOption === 'custom' 
               ? 'border-primary shadow-lg shadow-primary/25' 
               : 'border-border hover:border-primary/50'
@@ -203,7 +203,7 @@ const ScanConfig = () => {
                 {selectedOption === 'custom' ? 'Customizing...' : 'Customize Config'}
               </Button>
             </CardContent>
-          </Card>
+          </Card> */}
         </div>
 
         {/* Continue Button */}
