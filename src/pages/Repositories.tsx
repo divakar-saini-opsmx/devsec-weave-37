@@ -141,11 +141,12 @@ export default function Repositories() {
   const baseUrl = window.REACT_APP_CONFIG.API_BASE_URL || "";
   const getRepository = window.REACT_APP_CONFIG.API_ENDPOINTS.GET_REPOSITORY || "";
   const createRepository = window.REACT_APP_CONFIG.API_ENDPOINTS.CREATE_REPOSITORY || "";
-  
+  const [loading, setLoading] = useState(true); 
 
   const getRepositoryList = async () => {    
 
     try {
+      setLoading(true);
       const res = await fetchWithAuth(`${baseUrl}${getRepository}${activeHub?.id}`);
       const data = await res.json();
       console.log("Repositoy List:", data); 
@@ -158,6 +159,8 @@ export default function Repositories() {
       toast({
         title: "Failed to load Repo List"        
       });
+    }finally{
+      setLoading(false); // stop loader in both success/fail
     }
     
   }
@@ -333,15 +336,7 @@ const transformApiResponse = (apiResponse) => {
 
   return (
     <div className="p-8">
-      <div className="flex items-center justify-between mb-8">
-        {/* <div>
-          <h1 className="text-3xl font-bold text-primary">
-            Repositories
-          </h1>
-          <p className="text-muted-foreground mt-2">
-            Manage and monitor your connected repositories
-          </p>
-        </div> */}        
+      <div className="flex items-center justify-between mb-8">               
         {repositories.length > 0 && (
           <Button onClick={() => setIsAddDialogOpen(true)}>
             <Plus className="h-4 w-4 mr-2" />
@@ -349,8 +344,15 @@ const transformApiResponse = (apiResponse) => {
           </Button>
         )}
       </div>
-
-      {repositories.length === 0 ? (
+        
+      {loading ? (
+          <Card>
+          <CardContent className="flex flex-col items-center justify-center py-16">
+            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground mb-4" />
+            <p className="text-muted-foreground">Loading projects...</p>
+          </CardContent>
+        </Card>
+      ):repositories.length === 0 ? (
         <EmptyState />
       ) : (
         <Card>

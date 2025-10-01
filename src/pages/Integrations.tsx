@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Plus, GitBranch, Settings } from 'lucide-react';
+import { Plus, GitBranch, Settings,Loader2 } from 'lucide-react';
 import { AddIntegrationDialog } from '@/components/integrations/AddIntegrationDialog';
 import { useHub } from "@/contexts/HubContext";
 import { fetchWithAuth } from "@/lib/fetchWithAuth";
@@ -37,28 +37,24 @@ const Integrations = () => {
   const baseUrl = window.REACT_APP_CONFIG.API_BASE_URL || "";
   const getIntegrations = window.REACT_APP_CONFIG.API_ENDPOINTS.GET_INTEGRATIONS || "";
   const { activeHub } = useHub();
-  const { toast } = useToast(); 
+  const { toast } = useToast();
+  const [loading, setLoading] = useState(true); 
 
   const getIntegrationList = async () => {    
 
     try {
+      setLoading(true);
       const res = await fetchWithAuth(`${baseUrl}${getIntegrations}?teamIds=${activeHub?.id}`);
       const data = await res.json();
-
       console.log("Integrations List:", data);
-      setIntegrations(data?.data);
-      // const pocessResp = transformApiResponse(data);
-      // console.log(pocessResp);
-      // setRepositories(prev => [...(prev ?? []), ...pocessResp]);
-       //console.log("respo list",repositories);
-      
-    
+      setIntegrations(data?.data);    
     } catch (err) {     
       toast({
         title: "Failed to load Integrations List"        
       });
-    }
-    
+    }finally{
+      setLoading(false); // stop loader in both success/fail
+    }    
   }
   
     useEffect(() => {
@@ -75,6 +71,7 @@ const Integrations = () => {
     // };
     // setIntegrations([...integrations, newIntegration]);
     setIsDialogOpen(false);
+    getIntegrationList(); // refresh after saving new integration
   };
 
   return (
@@ -92,21 +89,28 @@ const Integrations = () => {
         </Button>
       </div>
 
-      {integrations.length === 0 ? (
+      {loading ? (
+         <Card>
+         <CardContent className="flex flex-col items-center justify-center py-16">
+           <Loader2 className="h-8 w-8 animate-spin text-muted-foreground mb-4" />
+           <p className="text-muted-foreground">Loading integrations...</p>
+         </CardContent>
+       </Card>
+      ) : integrations.length === 0 ?(
         <Card>
-          <CardContent className="flex flex-col items-center justify-center py-16">
-            <GitBranch className="h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No integrations yet</h3>
-            <p className="text-muted-foreground mb-4 text-center">
-              Create your first integration to connect with external repositories
-            </p>
-            <Button onClick={() => setIsDialogOpen(true)}>
-              <Plus className="mr-2 h-4 w-4" />
-              Create New Integration
-            </Button>
-          </CardContent>
-        </Card>
-      ) : (
+        <CardContent className="flex flex-col items-center justify-center py-16">
+          <GitBranch className="h-12 w-12 text-muted-foreground mb-4" />
+          <h3 className="text-lg font-semibold mb-2">No integrations yet</h3>
+          <p className="text-muted-foreground mb-4 text-center">
+            Create your first integration to connect with external repositories
+          </p>
+          <Button onClick={() => setIsDialogOpen(true)}>
+            <Plus className="mr-2 h-4 w-4" />
+            Create New Integration
+          </Button>
+        </CardContent>
+      </Card>
+      ) :(
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -144,6 +148,7 @@ const Integrations = () => {
           </CardContent>
         </Card>
       )}
+
 
       <AddIntegrationDialog
         open={isDialogOpen}
