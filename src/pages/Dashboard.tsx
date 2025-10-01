@@ -23,6 +23,9 @@ interface Optimization {
   topPriority : number;
 }
 
+interface VulnerabilityCounts {
+  severityCounts: Record<string, number>;
+}
 // One item inside vulnerabilityPrioritisationData
 export interface VulnerabilityPrioritisationItem {
   name: string;      // e.g. "Priority 3"
@@ -60,6 +63,7 @@ const Dashboard = () => {
   const getPrioritization = window.REACT_APP_CONFIG.API_ENDPOINTS.DASHBOARD_PRIORITIZATION || "";
   const [optimization, setOptimization] = useState<Optimization | null>(null);
   const [prioritisation, setPrioritisation] = useState<Prioritisation | null>(null);
+  const [severityCounts, setSeverityCounts] = useState<Record<string, number>>({});
   
   const getOptimizationList = async () => {    
 
@@ -85,6 +89,15 @@ const Dashboard = () => {
       const res = await fetchWithAuth(`${baseUrl}${getPrioritization}?teamId=${activeHub?.id}&suppressedFlag=false&current=false`);
       const data: Prioritisation = await res.json();
       console.log("getPrioritizationList List:", data);
+      const severityCounts = data.vulnerabilityPrioritisationData.reduce(
+        (acc: Record<string, number>, item) => {
+          const sev = item.severity.toLowerCase();
+          acc[sev] = (acc[sev] || 0) + 1;
+          return acc;
+        },
+        {}
+      );
+      setSeverityCounts(severityCounts);
       setPrioritisation(data);    
     
     } catch (err) {     
@@ -242,6 +255,7 @@ const Dashboard = () => {
       <VulnerabilityOverview
         optimization={optimization}
         prioritisation={prioritisation}
+        vulnerabilityCounts={severityCounts}
       />
     
       {/* Welcome Header */}

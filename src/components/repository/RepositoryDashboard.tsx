@@ -111,8 +111,25 @@ export function RepositoryDashboard() {
   // ].filter(item => item.value > 0);
 
   return (
-    <div className="space-y-6">
-      {/* Top Section - Metrics Cards */}
+    <div className="space-y-6 flex-1 flex ">
+     
+      {/*Coming Soon Page*/}
+      <div className="h-full flex-1 flex">
+      <Card className="w-full h-full flex-1">
+          <CardHeader>
+            <div className="flex items-center gap-2">         
+              
+            </div>          
+            </CardHeader>
+            <CardContent>
+              <div className="text-center text-muted-foreground py-10">
+              <h1 className="text-2xl md:text-4xl font-bold mb-4">🚀 We're working on it!</h1>
+              <p className="text-lg md:text-2xl text-gray-600">Exciting things are on the way. Stay tuned!</p>
+              </div>
+            </CardContent>
+            
+        </Card>
+        </div>
       {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"> */}
         {/* Scan Frequency */}
         {/* <Card>
@@ -164,9 +181,11 @@ export function RepositoryDashboard() {
       {/* </div> */}
 
       {/* Charts Section */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"> */}
+        
+       
         {/* Scan Frequency Chart */}
-        <Card>
+        {/* <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Activity className="h-5 w-5 text-primary" />
@@ -184,10 +203,10 @@ export function RepositoryDashboard() {
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
-        </Card>
+        </Card> */}
 
         {/* Vulnerability Distribution */}
-        <Card>
+        {/* <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Shield className="h-5 w-5 text-primary" />
@@ -197,7 +216,7 @@ export function RepositoryDashboard() {
           <CardContent>
             <ResponsiveContainer width="100%" height={200}>
               <PieChart>
-                {/* <Pie
+                <Pie
                   data={vulnerabilityData}
                   cx="50%"
                   cy="50%"
@@ -208,15 +227,15 @@ export function RepositoryDashboard() {
                   {vulnerabilityData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
-                </Pie> */}
+                </Pie>
                 <Tooltip />
               </PieChart>
             </ResponsiveContainer>
           </CardContent>
-        </Card>
+        </Card> */}
 
         {/* Issues Trend */}
-        <Card className="lg:col-span-2">
+        {/* <Card className="lg:col-span-2">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <CheckCircle2 className="h-5 w-5 text-primary" />
@@ -235,11 +254,11 @@ export function RepositoryDashboard() {
               </LineChart>
             </ResponsiveContainer>
           </CardContent>
-        </Card>
-      </div>
+        </Card> */}
+      {/* </div> */}
 
       {/* Scans History Table */}
-      <Card>
+      {/* <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Calendar className="h-5 w-5 text-primary" />
@@ -307,7 +326,7 @@ export function RepositoryDashboard() {
             </TableBody>
           </Table>
         </CardContent>
-      </Card>
+      </Card> */}
     </div>
   );
 }
