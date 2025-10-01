@@ -151,9 +151,9 @@ const Dashboard = () => {
   );
 
   // If GitHub is not connected, show empty state
-  if (!isGitHubConnected) {
-    return <GitHubEmptyState />;
-  }
+  // if (!isGitHubConnected) {
+  //   return <GitHubEmptyState />;
+  // }
 
 
   const securityMetrics = [

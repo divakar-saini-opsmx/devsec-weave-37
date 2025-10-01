@@ -213,10 +213,10 @@ const HubSetup = () => {
 }
 
 const handleMessage = (event) => {
-  if (event.origin !== "https://oauth-bridge.remediation.opsmx.org") {    
-    console.warn("Blocked message from:", event.origin);
-    return;
-  }
+  // if (event.origin !== "https://oauth-bridge.aoa.oes.opsmx.org") {    
+  //   console.warn("Blocked message from:", event.origin);
+  //   return;
+  // }
 
   setReceivedMessage(event.data);
 
@@ -404,13 +404,13 @@ const encryptToken = (token,secretKey) => {
                     Connect GitHub App
                   </Button>
                   
-                  <Button
+                  {/* <Button
                     onClick={() => navigate('/scan-config')}
                     variant="ghost"
                     className="flex-1 h-12"
                   >
                     Skip for Now
-                  </Button>
+                  </Button> */}
                 </div>
                 
                 {/* <div className="text-sm text-muted-foreground space-y-2">

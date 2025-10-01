@@ -28,6 +28,7 @@ interface Repository {
   projectId: string;
   organization : string;
   name: string;
+  projectName:string;
   branch: string;
   status: 'Failed' | 'Scanning' | 'Pending' |'Completed' ;
   issues: {
@@ -183,17 +184,18 @@ const transformApiResponse = (apiResponse) => {
         const repoScans = repos[repoName];
 
         repoScans.forEach((scan, scanIndex) => {
+
+          const scanAt = scan.lastScannedAt ? new Date(scan.lastScannedAt).toLocaleString() : undefined;
           results.push({
             id: `${repoIndex + 1}-${scanIndex + 1}`,
             projectId: projectId,
             organization : orgKey,
             name: repoName,
+            projectName : summaryMetaData.projectName || "",
             branch: scan.branch || "-",
             status: scan.status || "Unknown",
             issues: { critical: 0, high: 0, medium: 0, low: 0 }, // <-- default, update if API has issues
-            lastScan: scan.lastScannedAt
-              ? scan.lastScannedAt
-              : undefined,
+            lastScan: scanAt,
           });
         });
       });
@@ -364,7 +366,7 @@ const transformApiResponse = (apiResponse) => {
                 <TableRow>
                   <TableHead>Name</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead>Issues Summary</TableHead>
+                  <TableHead>Branch</TableHead>
                   <TableHead>Last Scan</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
@@ -376,7 +378,7 @@ const transformApiResponse = (apiResponse) => {
                       <div className="flex flex-col gap-1">
                         <span className="font-medium">{repo.name}</span>
                         <span className="text-sm text-muted-foreground">
-                          Branch: {repo.branch}
+                          Project: {repo.projectName}
                         </span>
                       </div>
                     </TableCell>
@@ -389,9 +391,10 @@ const transformApiResponse = (apiResponse) => {
                         </Badge>
                       </div>
                     </TableCell>
-                    <TableCell>
+                    {/* <TableCell>
                       <IssuesSummary issues={repo.issues} />
-                    </TableCell>
+                    </TableCell> */}
+                    <TableCell>{repo.branch}</TableCell>
                     <TableCell>
                       {repo.lastScan || (
                         <span className="text-muted-foreground">Never</span>
