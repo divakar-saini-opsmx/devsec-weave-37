@@ -24,15 +24,25 @@ interface Repository {
 
 interface Finding {
   id: string;
- // severity: 'Critical' | 'High' | 'Medium' | 'Low';
-  //description: string;
+  scanId: string;
+  organization: string;
+  platform: string;
+  repository: string;
+  branch: string;
+  rule_name?: string;
+  rule_message?: string;
+  component?: string[];
+  severity: 'critical' | 'high' | 'medium' | 'low';
+  confidence: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
+  vulnerability?: string;
+  metadata?: {
+    file_path: string;
+    line: number;
+  };
   ruleName?: string;
   packageName?: string;
   cveId?: string;
   filePath?: string;
-  //confidence?: 'High' | 'Medium' | 'Low';
-  severity: 'critical' | 'high' | 'medium' | 'low';
-  confidence: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
   codeSnippet?: string;
   currentVersion?: string;
   upgradeToVersion?: string;

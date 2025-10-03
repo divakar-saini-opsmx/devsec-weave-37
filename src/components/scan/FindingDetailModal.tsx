@@ -7,18 +7,27 @@ import { Copy, ExternalLink, FileText } from 'lucide-react';
 
 interface Finding {
   id: string;
+  scanId: string;
+  organization: string;
+  platform: string;
+  repository: string;
+  branch: string;
+  rule_name?: string;
+  rule_message?: string;
+  component?: string[];
   ruleName?: string;
   packageName?: string;
   vulnerability?: string;
   cveId?: string;
- // severity: 'Critical' | 'High' | 'Medium' | 'Low';
- // confidence?: 'High' | 'Medium' | 'Low';
   severity: 'critical' | 'high' | 'medium' | 'low';
   confidence: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
   filePath?: string;
+  metadata?: {
+    file_path: string;
+    line: number;
+  };
   currentVersion?: string;
   upgradeToVersion?: string;
-  //description: string;
   codeSnippet?: string;
 }
 

@@ -1,6 +1,5 @@
 // src/lib/queryClient.ts
 import { QueryClient } from "@tanstack/react-query";
-import { handleSessionExpired } from "./auth";
 
 const queryClient = new QueryClient();
 

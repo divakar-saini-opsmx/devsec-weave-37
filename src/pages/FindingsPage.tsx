@@ -60,14 +60,25 @@ const mockRepositories = {
 
 interface Finding {
   id: string;
+  scanId: string;
+  organization: string;
+  platform: string;
+  repository: string;
+  branch: string;
+  rule_name?: string;
+  rule_message?: string;
+  component?: string[];
   severity: 'critical' | 'high' | 'medium' | 'low';
   confidence: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
-  //description: string;
+  vulnerability?: string;
+  metadata?: {
+    file_path: string;
+    line: number;
+  };
   ruleName?: string;
   packageName?: string;
   cveId?: string;
   filePath?: string;
-  //confidence?: 'High' | 'Medium' | 'Low';  
   codeSnippet?: string;
   currentVersion?: string;
   upgradeToVersion?: string;

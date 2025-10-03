@@ -27,10 +27,10 @@ interface Finding {
   platform : string;
   repository : string;
   branch : string;
-  component: string[];
+  component?: string[];
   severity: 'critical' | 'high' | 'medium' | 'low';
   confidence: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
-  vulnerability : string;   
+  vulnerability?: string;   
 }
 
 export interface ExecutionMessageValue {

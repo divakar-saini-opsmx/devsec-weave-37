@@ -26,11 +26,11 @@ interface Finding {
   platform : string;
   repository : string;
   branch : string;
-  rule_name: string;
+  rule_name?: string;
   severity: 'critical' | 'high' | 'medium' | 'low';
   confidence: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
-  rule_message : string;
-  metadata:{
+  rule_message?: string;
+  metadata?:{
     file_path: string;
     line: number;
   }
