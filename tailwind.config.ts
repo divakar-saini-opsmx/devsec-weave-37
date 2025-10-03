@@ -59,6 +59,21 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        severity: {
+          critical: "hsl(var(--severity-critical))",
+          high: "hsl(var(--severity-high))",
+          medium: "hsl(var(--severity-medium))",
+          low: "hsl(var(--severity-low))",
+          unknown: "hsl(var(--severity-unknown))",
+        },
+        priority: {
+          "1-plus": "hsl(var(--priority-1-plus))",
+          "1": "hsl(var(--priority-1))",
+          "2": "hsl(var(--priority-2))",
+          "3": "hsl(var(--priority-3))",
+          "4": "hsl(var(--priority-4))",
+          unprioritized: "hsl(var(--priority-unprioritized))",
+        },
       },
       backgroundImage: {
         'gradient-primary': 'var(--gradient-primary)',
