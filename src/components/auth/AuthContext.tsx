@@ -33,6 +33,7 @@ import { createContext, useContext, useState } from "react";
 type User = {
   username: string;
   authenticated: boolean;
+  avatar?: string;
 } | null;
 
 type AuthContextType = {

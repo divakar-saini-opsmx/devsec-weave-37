@@ -5,10 +5,11 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { ThemeSwitch } from '@/components/ui/theme-switch';
 import { Bell, Settings, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/components/auth/AuthContext';
 
 export const AppHeader = () => {
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const { user } = useAuth();
 
   const handleLogout = () => {
     localStorage.removeItem('isAuthenticated');
@@ -36,18 +37,18 @@ export const AppHeader = () => {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 gap-2 px-2">
               <Avatar className="h-6 w-6">
-                <AvatarImage src={user.avatar} />
-                <AvatarFallback>{user.name?.charAt(0) || 'U'}</AvatarFallback>
+                <AvatarImage src={user?.avatar} />
+                <AvatarFallback>{user?.username?.charAt(0)?.toUpperCase() || 'U'}</AvatarFallback>
               </Avatar>
               <span className="text-sm font-medium hidden md:inline">
-                {user.name || 'User'}
+                {user?.username || 'User'}
               </span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
             <div className="p-2">
-              <p className="text-sm font-medium">{user.name}</p>
-              <p className="text-xs text-muted-foreground">{user.email}</p>
+              <p className="text-sm font-medium">{user?.username}</p>
+              <p className="text-xs text-muted-foreground">{user?.username}</p>
             </div>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => navigate('/settings')}>
